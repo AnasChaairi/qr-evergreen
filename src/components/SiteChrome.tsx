@@ -84,3 +84,43 @@ const INFO_LABELS: Record<Locale, Record<"about" | "contact" | "privacy" | "term
   en: { about: "About", contact: "Contact", privacy: "Privacy", terms: "Terms" },
   fr: { about: "À propos", contact: "Contact", privacy: "Confidentialité", terms: "Conditions" },
 };
+
+// Header for signed-in pages: same brand, a dashboard link and sign out.
+export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: string; signedIn: boolean }) {
+  const ui = UI[locale];
+  const other = LOCALES.find((l) => l !== locale)!;
+  const strings = locale === "fr" ? { dashboard: "Tableau de bord", signOut: "Se déconnecter" } : { dashboard: "Dashboard", signOut: "Sign out" };
+  const prefix = (l: Locale) => (l === "fr" ? "/fr" : "");
+  return (
+    <header className="border-b border-stone-200 bg-white">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <Link href={pathFor(locale, "home")} className="flex items-center gap-2 font-semibold text-stone-900">
+          <Logo />
+          <span>{ui.siteName}</span>
+        </Link>
+        <nav className="flex items-center gap-4 text-sm">
+          {signedIn && (
+            <>
+              <Link href={`${prefix(locale)}/dashboard`} className="text-stone-600 hover:text-stone-900">
+                {strings.dashboard}
+              </Link>
+              <form action={`/auth/signout?locale=${locale}`} method="post">
+                <button type="submit" className="text-stone-600 hover:text-stone-900">
+                  {strings.signOut}
+                </button>
+              </form>
+            </>
+          )}
+          <Link
+            href={`${prefix(other)}${path}` || "/"}
+            hrefLang={other}
+            lang={other}
+            className="rounded-full border border-stone-300 px-3 py-1 text-stone-700 hover:bg-stone-100"
+          >
+            {ui.nav.switchLanguage}
+          </Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
