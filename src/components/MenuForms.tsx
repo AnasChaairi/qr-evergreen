@@ -36,13 +36,11 @@ import { buildPrintPack } from "@/lib/review/printPack";
 import { createClient } from "@/lib/supabase/browser";
 import { SUPABASE_URL } from "@/lib/supabase/env";
 
-const inputClass =
-  "mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 shadow-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20";
-const smallInput =
-  "block w-full rounded-lg border border-stone-300 bg-white px-2 py-1.5 text-sm text-stone-900 focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20";
-const buttonClass =
-  "rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800 disabled:cursor-not-allowed disabled:bg-stone-300";
-const quietButton = "rounded-lg border border-stone-300 px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-100 disabled:opacity-40";
+const inputClass = "field mt-2";
+const smallInput = "field min-h-11 px-3 py-2";
+const buttonClass = "btn btn-primary";
+const quietButton =
+  "inline-flex min-h-11 items-center gap-1 rounded-full border-[1.5px] border-stone-300 bg-white px-4 text-[15px] font-medium text-stone-800 hover:border-brand-700 hover:bg-brand-50 disabled:opacity-40";
 
 type Errors = DashboardStrings["errors"] & MenuStrings["errors"];
 
@@ -63,15 +61,15 @@ function ErrorText({ state, errors }: { state: MenuActionState; errors: Errors }
 export function CreateMenuForm({ locale, t, errors }: { locale: Locale; t: MenuStrings; errors: Errors }) {
   const [state, action, pending] = useActionState(createMenu, null);
   return (
-    <form action={action} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-      <h2 className="font-semibold text-stone-900">{t.create.heading}</h2>
+    <form action={action} className="space-y-4 card">
+      <h2 className="text-xl font-bold text-stone-900">{t.create.heading}</h2>
       <input type="hidden" name="locale" value={locale} />
       <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.create.title}
           <input name="title" required maxLength={80} placeholder={t.create.titlePlaceholder} className={inputClass} />
         </label>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.create.language}
           <select name="language" defaultValue={locale} className={inputClass}>
             {MENU_LANGS.map((lang) => (
@@ -126,18 +124,18 @@ export function MenuDetailsForm({
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="id" value={id} />
       <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.edit.title}
           <input name="title" required maxLength={80} defaultValue={title} className={inputClass} />
         </label>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.edit.color}
-          <input name="color" type="color" defaultValue={color} className="mt-1 h-10 w-16 cursor-pointer rounded border border-stone-300 bg-white p-1" />
+          <input name="color" type="color" defaultValue={color} className="mt-2 block h-12 w-20 cursor-pointer rounded-xl border-[1.5px] border-stone-300 bg-white p-1.5" />
         </label>
       </div>
 
       <fieldset className="space-y-2">
-        <legend className="text-sm font-medium text-stone-700">{t.edit.languages}</legend>
+        <legend className="text-[15px] font-semibold text-stone-800">{t.edit.languages}</legend>
         <select name="defaultLanguage" value={defaultLang} onChange={(e) => setDefaultLang(e.target.value as MenuLang)} className={`${smallInput} max-w-48`}>
           {MENU_LANGS.map((lang) => (
             <option key={lang} value={lang}>
@@ -158,7 +156,7 @@ export function MenuDetailsForm({
                   checked={checked}
                   disabled={locked}
                   onChange={(e) => setExtras(e.target.checked ? [...extras, lang] : extras.filter((l) => l !== lang))}
-                  className="accent-brand-700"
+                  className="h-5 w-5 accent-brand-700"
                 />
                 {t.langNames[lang]}
               </label>
@@ -169,18 +167,18 @@ export function MenuDetailsForm({
       </fieldset>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.edit.phone}
           <input name="phone" type="tel" defaultValue={phone} className={inputClass} />
         </label>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.edit.whatsapp}
           <input name="whatsapp" inputMode="numeric" defaultValue={whatsapp} className={inputClass} />
         </label>
       </div>
 
       <fieldset>
-        <legend className="mb-2 text-sm font-medium text-stone-700">{t.edit.hours}</legend>
+        <legend className="mb-3 text-[15px] font-semibold text-stone-800">{t.edit.hours}</legend>
         <div className="space-y-2">
           {DAYS.map((day) => (
             <div key={day} className="grid grid-cols-[4.5rem_minmax(0,1fr)_minmax(0,1fr)_auto] items-center gap-1.5 text-sm sm:grid-cols-[6rem_minmax(0,1fr)_minmax(0,1fr)_auto] sm:gap-2">
@@ -207,7 +205,7 @@ export function MenuDetailsForm({
                   name={`closed_${day}`}
                   checked={closed[day]}
                   onChange={(e) => setClosed({ ...closed, [day]: e.target.checked })}
-                  className="accent-brand-700"
+                  className="h-5 w-5 accent-brand-700"
                 />
                 {t.edit.closed}
               </label>
@@ -275,12 +273,12 @@ export function MenuFileUpload({
 
   return (
     <div className="space-y-3">
-      <h2 className="font-semibold text-stone-900">{t.upload.heading}</h2>
-      <p className="text-sm text-stone-600">{t.upload.help}</p>
+      <h2 className="text-xl font-bold text-stone-900">{t.upload.heading}</h2>
+      <p className="text-[15px] text-stone-600">{t.upload.help}</p>
       {currentPath && (
         <p className="text-sm text-stone-700">
           {t.upload.current}:{" "}
-          <a href={publicFileUrl(SUPABASE_URL, currentPath)} target="_blank" rel="noopener" className="text-brand-700 underline">
+          <a href={publicFileUrl(SUPABASE_URL, currentPath)} target="_blank" rel="noopener" className="break-all font-semibold text-brand-700 underline underline-offset-4">
             {currentPath.split("/").pop()}
           </a>
         </p>
@@ -381,7 +379,7 @@ export function MenuBuilder({
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="font-semibold text-stone-900">{t.builder.heading}</h2>
+        <h2 className="text-xl font-bold text-stone-900">{t.builder.heading}</h2>
         {languages.length > 1 && (
           <div role="tablist" aria-label={t.edit.languages} className="flex gap-1 rounded-full bg-stone-100 p-1">
             {languages.map((l) => (
@@ -391,7 +389,7 @@ export function MenuBuilder({
                 role="tab"
                 aria-selected={lang === l}
                 onClick={() => setLang(l)}
-                className={`rounded-full px-3 py-1 text-sm ${lang === l ? "bg-white font-medium text-stone-900 shadow-sm" : "text-stone-600"}`}
+                className={`rounded-full px-3 py-1 text-sm ${lang === l ? "bg-white font-medium text-stone-900 shadow-sm" : "text-[17px] text-stone-600"}`}
               >
                 {t.langNames[l]}
               </button>
@@ -402,7 +400,7 @@ export function MenuBuilder({
 
       <fieldset disabled={locked} className="space-y-4" dir={rtl(lang) ? "rtl" : undefined} lang={lang}>
         {sections.map((section, si) => (
-          <div key={section.id} className="space-y-3 rounded-xl border border-stone-200 p-3 sm:p-4">
+          <div key={section.id} className="space-y-3 rounded-2xl border border-stone-200 p-4 sm:p-5">
             <div className="flex items-center gap-2">
               <input
                 value={section.title[lang] ?? ""}
@@ -424,7 +422,7 @@ export function MenuBuilder({
             </div>
 
             {section.items.map((item, ii) => (
-              <div key={item.id} className="space-y-2 rounded-lg bg-stone-50 p-3">
+              <div key={item.id} className="space-y-3 rounded-2xl bg-stone-50 p-4">
                 <div className="grid gap-2 sm:grid-cols-[1fr_8rem]">
                   <input
                     value={item.name[lang] ?? ""}
@@ -493,7 +491,7 @@ export function MenuBuilder({
                                 allergens: e.target.checked ? [...item.allergens, allergen] : item.allergens.filter((a) => a !== allergen),
                               })
                             }
-                            className="accent-brand-700"
+                            className="h-5 w-5 accent-brand-700"
                           />
                           {t.allergens[allergen]}
                         </label>
@@ -591,17 +589,17 @@ export function MenuPackPanel({
 
   return (
     <div className="space-y-3">
-      <h2 className="font-semibold text-stone-900">{t.pack.heading}</h2>
-      <p className="text-sm text-stone-600">{t.pack.intro}</p>
+      <h2 className="text-xl font-bold text-stone-900">{t.pack.heading}</h2>
+      <p className="text-[15px] text-stone-600">{t.pack.intro}</p>
       <div className="flex flex-wrap gap-2">
         {PRINT_DESIGNS.filter((d) => allowed.includes(d)).map((option) => (
           <label
             key={option}
-            className={`flex cursor-pointer items-center gap-2 rounded-full border px-3 py-1.5 text-sm ${
+            className={`flex cursor-pointer items-center gap-2 min-h-11 rounded-full border-[1.5px] px-4 py-2 text-[15px] font-medium ${
               design === option ? "border-brand-700 bg-brand-50 text-brand-800" : "border-stone-300 text-stone-700"
             }`}
           >
-            <input type="radio" name="menu-design" checked={design === option} onChange={() => setDesign(option)} className="accent-brand-700" />
+            <input type="radio" name="menu-design" checked={design === option} onChange={() => setDesign(option)} className="h-5 w-5 accent-brand-700" />
             {designNames[option]}
           </label>
         ))}

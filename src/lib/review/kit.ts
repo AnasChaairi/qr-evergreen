@@ -51,7 +51,7 @@ export function itemLink(shortUrl: string, item: PrintItemId): string {
   return `${shortUrl}?s=${item}`;
 }
 
-export const DEFAULT_BRAND_COLOR = "#166534";
+export const DEFAULT_BRAND_COLOR = "#0f6b45";
 
 export function normalizeColor(value: string | undefined | null): string {
   return value && /^#[0-9a-f]{6}$/i.test(value) ? value.toLowerCase() : DEFAULT_BRAND_COLOR;

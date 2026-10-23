@@ -14,12 +14,12 @@ export type Design = {
 };
 
 export const DEFAULT_DESIGN: Design = {
-  foreground: "#111827",
+  foreground: "#12261d",
   background: "#ffffff",
   dotType: "square",
   cornerType: "square",
   logo: null,
-  frame: { enabled: false, color: "#166534", textColor: "#ffffff", text: "" },
+  frame: { enabled: false, color: "#0f6b45", textColor: "#ffffff", text: "" },
 };
 
 export async function renderSvg(data: string, design: Design): Promise<string> {

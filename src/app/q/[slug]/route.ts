@@ -94,7 +94,7 @@ function page(status: number, kind: keyof typeof MESSAGES, slug: string) {
   const { title, body } = MESSAGES[kind];
   const report = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Report QR code ${slug}`)}`;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>${escapeXml(title)}</title>
-<style>body{font-family:system-ui,sans-serif;background:#fafaf9;color:#1c1917;margin:0;padding:48px 16px}main{max-width:480px;margin:auto}h1{font-size:1.4rem}a{color:#166534}</style></head>
+<style>body{font-family:system-ui,sans-serif;background:#f4f6f1;color:#12261d;margin:0;padding:48px 16px;line-height:1.55}main{max-width:480px;margin:auto;background:#fff;border:1px solid #e1e7df;border-radius:24px;padding:28px}h1{font-size:1.5rem;margin-top:0}a{color:#0f6b45;font-weight:600}</style></head>
 <body><main><h1>${escapeXml(title)}</h1><p>${escapeXml(body)}</p><p><a href="${report}">Report this code</a> · <a href="https://qrevergreen.com">QR Evergreen</a></p></main></body></html>`;
   return new Response(html, {
     status,

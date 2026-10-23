@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { ChatIcon, ClockIcon, FileIcon, PhoneIcon } from "@/components/Icons";
 import { MENU_PUBLIC } from "@/content/menu";
 import { SLUG_PATTERN } from "@/lib/dynamic/slug";
 import {
@@ -90,11 +91,10 @@ export default async function PublicMenuPage({ params, searchParams }: PageProps
   const list = new Intl.ListFormat(lang, { type: "unit", style: "short" });
 
   return (
-    <main lang={lang} dir={rtl(lang) ? "rtl" : "ltr"} className="mx-auto min-h-screen max-w-xl pb-12">
-      <header className="space-y-4 px-4 pb-6 pt-8 text-white" style={{ backgroundColor: menu.color }}>
-        <h1 className="text-2xl font-bold">{menu.title}</h1>
+    <main lang={lang} dir={rtl(lang) ? "rtl" : "ltr"} className="mx-auto min-h-screen max-w-xl bg-stone-50 pb-12">
+      <header className="space-y-5 rounded-b-[28px] px-5 pb-6 pt-8 text-white" style={{ backgroundColor: menu.color }}>
         {menu.languages.length > 1 && (
-          <nav aria-label={t.language} className="flex flex-wrap gap-2">
+          <nav aria-label={t.language} className="flex w-fit flex-wrap gap-1 rounded-full bg-black/15 p-1">
             {menu.languages.map((l) => (
               <a
                 key={l}
@@ -102,22 +102,29 @@ export default async function PublicMenuPage({ params, searchParams }: PageProps
                 hrefLang={l}
                 lang={l}
                 aria-current={l === lang ? "true" : undefined}
-                className={`rounded-full border border-white/60 px-3 py-1 text-sm ${l === lang ? "bg-white text-stone-900" : "text-white"}`}
+                className={`inline-flex min-h-10 items-center rounded-full px-4 text-sm font-semibold ${l === lang ? "bg-white text-stone-900" : "text-white hover:bg-white/15"}`}
               >
                 {LANG_LABELS[l]}
               </a>
             ))}
           </nav>
         )}
+        <h1 className="text-3xl font-extrabold leading-tight">{menu.title}</h1>
         {(menu.phone || menu.whatsapp) && (
           <div className="flex gap-3">
             {menu.phone && (
-              <a href={`tel:${menu.phone}`} className="flex-1 rounded-xl bg-white px-4 py-3 text-center font-semibold text-stone-900">
+              <a href={`tel:${menu.phone}`} className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-white px-4 font-bold text-stone-900">
+                <PhoneIcon className="h-5 w-5" />
                 {t.call}
               </a>
             )}
             {menu.whatsapp && (
-              <a href={`https://wa.me/${menu.whatsapp}`} rel="noopener" className="flex-1 rounded-xl bg-white px-4 py-3 text-center font-semibold text-stone-900">
+              <a
+                href={`https://wa.me/${menu.whatsapp}`}
+                rel="noopener"
+                className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-[#25d366] px-4 font-bold text-[#0b2e17]"
+              >
+                <ChatIcon className="h-5 w-5" />
                 {t.whatsapp}
               </a>
             )}
@@ -125,73 +132,96 @@ export default async function PublicMenuPage({ params, searchParams }: PageProps
         )}
       </header>
 
-      <div className="space-y-8 px-4 pt-6">
+      {showSections && sections.length > 1 && (
+        <nav aria-label={menu.title} className="sticky top-0 z-10 flex gap-2 overflow-x-auto border-b border-stone-200 bg-white/95 px-5 py-3 backdrop-blur">
+          {sections.map((section) =>
+            pick(section.title, lang, fallback) ? (
+              <a
+                key={section.id}
+                href={`#s-${section.id}`}
+                className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-stone-100 px-4 text-sm font-semibold text-stone-800 hover:bg-stone-200"
+              >
+                {pick(section.title, lang, fallback)}
+              </a>
+            ) : null,
+          )}
+        </nav>
+      )}
+
+      <div className="space-y-8 px-5 pt-6">
         {showFile && menu.fileType === "image" && (
           <a href={menu.fileUrl!} rel="noopener" className="block">
             {/* eslint-disable-next-line @next/next/no-img-element -- restaurant's own upload from Storage */}
-            <img src={menu.fileUrl!} alt={menu.title} className="w-full rounded-xl border border-stone-200 bg-white" />
+            <img src={menu.fileUrl!} alt={menu.title} className="w-full rounded-3xl border border-stone-200 bg-white shadow-soft" />
           </a>
         )}
         {showFile && menu.fileType === "pdf" && (
           <a
             href={menu.fileUrl!}
             rel="noopener"
-            className="block rounded-xl px-5 py-4 text-center text-lg font-semibold text-white shadow-sm"
+            className="flex min-h-16 items-center justify-center gap-2 rounded-2xl px-5 text-center text-lg font-bold text-white shadow-soft"
             style={{ backgroundColor: menu.color }}
           >
+            <FileIcon className="h-6 w-6" />
             {t.openFile}
           </a>
         )}
 
         {showSections &&
           sections.map((section) => (
-            <section key={section.id} className="space-y-3">
+            <section key={section.id} id={`s-${section.id}`} className="scroll-mt-20 space-y-3">
               {pick(section.title, lang, fallback) && (
-                <h2 className="border-b-2 pb-1 text-lg font-bold text-stone-900" style={{ borderColor: menu.color }}>
+                <h2 className="flex items-center gap-3 text-2xl font-bold text-stone-900">
+                  <span aria-hidden="true" className="h-6 w-1.5 rounded-full" style={{ backgroundColor: menu.color }} />
                   {pick(section.title, lang, fallback)}
                 </h2>
               )}
-              <ul className="divide-y divide-stone-200">
+              <ul className="space-y-3">
                 {section.items.map((item) => (
-                  <li key={item.id} className="flex gap-3 py-3">
+                  <li key={item.id} className="flex gap-4 rounded-2xl bg-white p-4 shadow-[0_1px_2px_rgb(18_38_29/0.06)]">
+                    {item.photo && (
+                      /* eslint-disable-next-line @next/next/no-img-element -- restaurant's own upload from Storage */
+                      <img src={publicFileUrl(SUPABASE_URL, item.photo)} alt="" loading="lazy" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
+                    )}
                     <div className="min-w-0 flex-1 space-y-1">
                       <div className="flex items-baseline justify-between gap-3">
-                        <h3 className="font-semibold text-stone-900">{pick(item.name, lang, fallback)}</h3>
+                        <h3 className="font-sans text-[17px] font-bold tracking-normal text-stone-900">{pick(item.name, lang, fallback)}</h3>
                         {item.price && (
-                          <span dir="ltr" className="shrink-0 font-semibold text-stone-900">
+                          <span dir="ltr" className="shrink-0 font-bold" style={{ color: menu.color }}>
                             {item.price}
                           </span>
                         )}
                       </div>
-                      {pick(item.description, lang, fallback) && <p className="text-sm text-stone-600">{pick(item.description, lang, fallback)}</p>}
+                      {pick(item.description, lang, fallback) && (
+                        <p className="text-[15px] leading-snug text-stone-600">{pick(item.description, lang, fallback)}</p>
+                      )}
                       {item.allergens.length > 0 && (
-                        <p className="text-xs text-stone-500">
+                        <p className="text-[13px] text-stone-500">
                           {t.allergens}: {list.format(item.allergens.map((a) => t.allergenNames[a]))}
                         </p>
                       )}
                     </div>
-                    {item.photo && (
-                      /* eslint-disable-next-line @next/next/no-img-element -- restaurant's own upload from Storage */
-                      <img src={publicFileUrl(SUPABASE_URL, item.photo)} alt="" loading="lazy" className="h-20 w-20 shrink-0 rounded-lg object-cover" />
-                    )}
                   </li>
                 ))}
               </ul>
             </section>
           ))}
 
-        {!showFile && !showSections && <p className="rounded-xl bg-white p-4 text-center text-stone-600">{t.empty}</p>}
+        {!showFile && !showSections && <p className="rounded-2xl bg-white p-6 text-center text-stone-600">{t.empty}</p>}
 
         {hasHours(menu.hours) && (
-          <section className="space-y-2 rounded-xl bg-white p-4">
-            <h2 className="font-semibold text-stone-900">{t.hours}</h2>
-            <dl className="space-y-1 text-sm">
+          <section className="space-y-3 rounded-3xl bg-white p-5">
+            <h2 className="flex items-center gap-2 text-xl font-bold text-stone-900">
+              <ClockIcon className="h-5 w-5 text-stone-500" />
+              {t.hours}
+            </h2>
+            <dl className="space-y-2 text-[15px]">
               {DAYS.filter((day) => day in menu.hours).map((day) => {
                 const hours = menu.hours[day];
                 return (
                   <div key={day} className="flex justify-between gap-4">
                     <dt className="text-stone-600">{t.days[day]}</dt>
-                    <dd dir="ltr" className="font-medium text-stone-900">
+                    <dd dir="ltr" className="font-semibold text-stone-900">
                       {hours ? `${hours.open} – ${hours.close}` : t.closed}
                     </dd>
                   </div>

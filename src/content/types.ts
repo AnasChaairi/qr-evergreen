@@ -33,5 +33,13 @@ export type HomeContent = {
   toolBlurbs: Record<"wifi" | "url" | "whatsapp" | "review" | "vcard", string>;
   promiseHeading: string;
   promisePoints: { title: string; body: string }[];
+  badge: string;
+  trust: string[];
+  business: {
+    heading: string;
+    intro: string;
+    cta: string;
+    cards: { tag: string; title: string; body: string; cta: string; href: "review-kits" | "menus" | "codes" }[];
+  };
   faq: Faq[];
 };

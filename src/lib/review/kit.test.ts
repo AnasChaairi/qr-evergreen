@@ -29,6 +29,6 @@ describe("review kit", () => {
 
   it("falls back to the brand green for bad colours", () => {
     expect(normalizeColor("#AABBCC")).toBe("#aabbcc");
-    expect(normalizeColor("red")).toBe("#166534");
+    expect(normalizeColor("red")).toBe("#0f6b45");
   });
 });

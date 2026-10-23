@@ -48,9 +48,16 @@ export type GeneratorStrings = {
     frameText: string;
     frameColor: string;
     frameTextColor: string;
+    custom: string;
     contrastWarning: string;
   };
   defaultFrameText: Record<CodeType, string>;
+  steps: { pick: string; fill: Record<CodeType, string>; style: string; optional: string };
+  typeHints: Record<CodeType, string>;
+  wifiHint: string;
+  moreOptions: string;
+  downloadPrint: string;
+  printNote: string;
   preview: string;
   previewEmpty: string;
   download: string;
@@ -62,7 +69,7 @@ export type GeneratorStrings = {
 export type UiStrings = {
   siteName: string;
   tagline: string;
-  nav: { tools: string; about: string; switchLanguage: string; skipToContent: string };
+  nav: { tools: string; about: string; pricing: string; signIn: string; switchLanguage: string; skipToContent: string };
   footer: { promise: string; tools: string; company: string; rights: string };
   relatedTools: string;
   faqHeading: string;
@@ -73,7 +80,7 @@ export type UiStrings = {
 const en: UiStrings = {
   siteName: "QR Evergreen",
   tagline: "Free QR codes that never die.",
-  nav: { tools: "Tools", about: "About", switchLanguage: "Français", skipToContent: "Skip to content" },
+  nav: { tools: "Free tools", about: "About", pricing: "Pricing", signIn: "Sign in", switchLanguage: "Français", skipToContent: "Skip to content" },
   footer: {
     promise:
       "Free codes never die. Static codes hold their data inside the pattern, so they keep working even if this site disappears.",
@@ -122,13 +129,14 @@ const en: UiStrings = {
       corners: "Corners",
       dotOptions: { square: "Square", rounded: "Rounded", dots: "Dots", classy: "Classy", "extra-rounded": "Soft" },
       cornerOptions: { square: "Square", "extra-rounded": "Rounded", dot: "Circle" },
-      logo: "Logo (optional)",
+      logo: "Add your logo",
       logoRemove: "Remove logo",
       logoTooLarge: "Please choose an image under 2 MB.",
-      frame: "Add a frame with a call to action",
+      frame: "Add a frame with a short message, like “Scan me”",
       frameText: "Frame text",
       frameColor: "Frame colour",
       frameTextColor: "Text colour",
+      custom: "Other",
       contrastWarning: "Use a dark code on a light background. Light or low-contrast codes may not scan.",
     },
     defaultFrameText: {
@@ -138,6 +146,29 @@ const en: UiStrings = {
       review: "Leave a review",
       vcard: "Save my contact",
     },
+    steps: {
+      pick: "What should the code open?",
+      fill: {
+        wifi: "Your WiFi details",
+        url: "Paste the web address",
+        whatsapp: "Your WhatsApp number",
+        review: "Find your Google review link",
+        vcard: "Your contact details",
+      },
+      style: "Make it yours",
+      optional: "optional",
+    },
+    typeHints: {
+      wifi: "Guests join without typing",
+      url: "A menu, shop or booking page",
+      whatsapp: "Customers chat with you",
+      review: "Get more 5-star reviews",
+      vcard: "Save your number in one tap",
+    },
+    wifiHint: "Not sure? The network name and password are usually on a sticker under your router.",
+    moreOptions: "More style options: background, pattern, corners and frame colours",
+    downloadPrint: "Download PDF",
+    printNote: "The PDF stays sharp at any size, from a sticker to a poster. Use PNG for WhatsApp or social media.",
     preview: "Preview",
     previewEmpty: "Fill in the form to see your code.",
     download: "Download",
@@ -160,7 +191,7 @@ const en: UiStrings = {
 const fr: UiStrings = {
   siteName: "QR Evergreen",
   tagline: "Des QR codes gratuits qui n'expirent jamais.",
-  nav: { tools: "Outils", about: "À propos", switchLanguage: "English", skipToContent: "Aller au contenu" },
+  nav: { tools: "Outils gratuits", about: "À propos", pricing: "Tarifs", signIn: "Se connecter", switchLanguage: "English", skipToContent: "Aller au contenu" },
   footer: {
     promise:
       "Les codes gratuits n'expirent jamais. Un code statique contient ses données dans le motif : il fonctionne même si ce site disparaît.",
@@ -209,13 +240,14 @@ const fr: UiStrings = {
       corners: "Coins",
       dotOptions: { square: "Carré", rounded: "Arrondi", dots: "Points", classy: "Élégant", "extra-rounded": "Doux" },
       cornerOptions: { square: "Carré", "extra-rounded": "Arrondi", dot: "Cercle" },
-      logo: "Logo (facultatif)",
+      logo: "Ajouter votre logo",
       logoRemove: "Retirer le logo",
       logoTooLarge: "Choisissez une image de moins de 2 Mo.",
-      frame: "Ajouter un cadre avec un appel à l'action",
+      frame: "Ajouter un cadre avec un petit message, comme « Scannez-moi »",
       frameText: "Texte du cadre",
       frameColor: "Couleur du cadre",
       frameTextColor: "Couleur du texte",
+      custom: "Autre",
       contrastWarning: "Utilisez un code foncé sur un fond clair. Un code clair ou peu contrasté risque de ne pas être lu.",
     },
     defaultFrameText: {
@@ -225,6 +257,29 @@ const fr: UiStrings = {
       review: "Laissez un avis",
       vcard: "Mon contact",
     },
+    steps: {
+      pick: "Que doit ouvrir le code ?",
+      fill: {
+        wifi: "Les informations de votre WiFi",
+        url: "Collez l'adresse web",
+        whatsapp: "Votre numéro WhatsApp",
+        review: "Trouvez votre lien d'avis Google",
+        vcard: "Vos coordonnées",
+      },
+      style: "Personnalisez-le",
+      optional: "facultatif",
+    },
+    typeHints: {
+      wifi: "Connexion sans taper le mot de passe",
+      url: "Un menu, une boutique, une réservation",
+      whatsapp: "Vos clients vous écrivent",
+      review: "Plus d'avis 5 étoiles",
+      vcard: "Votre numéro enregistré en un geste",
+    },
+    wifiHint: "Vous ne savez pas ? Le nom du réseau et le mot de passe sont souvent sur une étiquette sous votre box.",
+    moreOptions: "Plus d'options : fond, motif, coins et couleurs du cadre",
+    downloadPrint: "Télécharger le PDF",
+    printNote: "Le PDF reste net à toutes les tailles, de l'autocollant à l'affiche. Utilisez le PNG pour WhatsApp ou les réseaux sociaux.",
     preview: "Aperçu",
     previewEmpty: "Remplissez le formulaire pour voir votre code.",
     download: "Télécharger",
