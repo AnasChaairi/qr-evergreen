@@ -8,6 +8,7 @@ import { codeTag } from "@/lib/dynamic/lookup";
 import { CODES_PER_HOUR, canCreateDynamicCode } from "@/lib/dynamic/plans";
 import { checkDestination } from "@/lib/dynamic/safety";
 import { generateSlug, shortBaseUrl } from "@/lib/dynamic/slug";
+import { menuTag } from "@/lib/menu/menu";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -93,6 +94,11 @@ export async function setArchived(formData: FormData): Promise<void> {
     .eq("id", id)
     .select("short_slug")
     .single();
-  if (data) revalidateTag(codeTag(data.short_slug), { expire: 0 });
+  if (data) {
+    revalidateTag(codeTag(data.short_slug), { expire: 0 });
+    // Review and menu pages hide themselves when their code is archived.
+    revalidatePath(`/r/${data.short_slug}`);
+    revalidateTag(menuTag(data.short_slug), { expire: 0 });
+  }
   revalidatePath(dashboardPath(locale, `/codes/${id}`));
 }

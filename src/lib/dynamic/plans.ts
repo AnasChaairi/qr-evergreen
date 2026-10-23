@@ -9,13 +9,15 @@ export type PlanLimits = {
   csvExport: boolean;
   reviewKits: number;
   menus: number;
+  menuBuilder: boolean; // free menus are an uploaded PDF or image only
+  menuLanguages: number;
   teamMembers: number;
 };
 
 export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
-  free: { dynamicCodes: 3, analyticsDays: 7, csvExport: false, reviewKits: 1, menus: 1, teamMembers: 1 },
-  starter: { dynamicCodes: 25, analyticsDays: 365, csvExport: false, reviewKits: 1, menus: 1, teamMembers: 1 },
-  business: { dynamicCodes: 250, analyticsDays: null, csvExport: true, reviewKits: 5, menus: 5, teamMembers: 3 },
+  free: { dynamicCodes: 3, analyticsDays: 7, csvExport: false, reviewKits: 1, menus: 1, menuBuilder: false, menuLanguages: 1, teamMembers: 1 },
+  starter: { dynamicCodes: 25, analyticsDays: 365, csvExport: false, reviewKits: 1, menus: 1, menuBuilder: true, menuLanguages: 1, teamMembers: 1 },
+  business: { dynamicCodes: 250, analyticsDays: null, csvExport: true, reviewKits: 5, menus: 5, menuBuilder: true, menuLanguages: 4, teamMembers: 3 },
 };
 
 // A lapsed paid plan falls back to free limits for creating and analytics;

@@ -56,6 +56,10 @@ Scans are partitioned by month. The migration creates partitions for the next 12
 
 Owners find their business with the Places API (`GOOGLE_PLACES_API_KEY`, signed-in users only) or paste a review link, and get one dynamic code. With no extra platforms it opens Google's review form directly; with TripAdvisor, Facebook, Trustpilot or Booking links it opens `/r/{slug}`, a page with no ads that shows every visitor the same links (no review gating). The print pack (`src/lib/review/printPack.ts`) is built in the browser with pdf-lib: counter stand, table tent, window sticker, receipt card and staff badge, each with its own `?s=` tag so the dashboard shows scans per printed item.
 
+## Menu QR
+
+Each menu gets one dynamic code that opens `/m/{slug}`, a mobile page with no ads: the menu itself, call and WhatsApp buttons, and opening hours, in up to four languages (EN, FR, AR with right-to-left layout, ES). A menu is either an uploaded PDF or image (all plans) or built in the dashboard with sections, dishes, prices, photos and the 14 EU allergens (paid plans). Files go to the public `menu-files` Storage bucket, created by the migration with a 10 MB limit: the browser resizes photos, asks a server action for a one-time signed upload URL, and uploads straight to Storage. Public menu data is cached under the `menu:{slug}` tag and refreshed on every edit. The table card and sticker pack reuses the review kit's print code.
+
 ## Adding a tool page
 
 1. Add the encoder and its tests in `src/lib/qr/payloads.ts`.

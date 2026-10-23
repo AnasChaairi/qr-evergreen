@@ -91,17 +91,17 @@ export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: st
   const other = LOCALES.find((l) => l !== locale)!;
   const strings =
     locale === "fr"
-      ? { dashboard: "Codes", reviewKits: "Kits avis", signOut: "Se déconnecter" }
-      : { dashboard: "Codes", reviewKits: "Review kits", signOut: "Sign out" };
+      ? { dashboard: "Codes", reviewKits: "Kits avis", menus: "Menus", signOut: "Se déconnecter" }
+      : { dashboard: "Codes", reviewKits: "Review kits", menus: "Menus", signOut: "Sign out" };
   const prefix = (l: Locale) => (l === "fr" ? "/fr" : "");
   return (
     <header className="border-b border-stone-200 bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href={pathFor(locale, "home")} className="flex items-center gap-2 font-semibold text-stone-900">
+        <Link href={pathFor(locale, "home")} className="flex shrink-0 items-center gap-2 font-semibold text-stone-900">
           <Logo />
-          <span>{ui.siteName}</span>
+          <span className="hidden sm:inline">{ui.siteName}</span>
         </Link>
-        <nav className="flex items-center gap-4 text-sm">
+        <nav className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm">
           {signedIn && (
             <>
               <Link href={`${prefix(locale)}/dashboard`} className="text-stone-600 hover:text-stone-900">
@@ -109,6 +109,9 @@ export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: st
               </Link>
               <Link href={`${prefix(locale)}/dashboard/review-kits`} className="text-stone-600 hover:text-stone-900">
                 {strings.reviewKits}
+              </Link>
+              <Link href={`${prefix(locale)}/dashboard/menus`} className="text-stone-600 hover:text-stone-900">
+                {strings.menus}
               </Link>
               <form action={`/auth/signout?locale=${locale}`} method="post">
                 <button type="submit" className="text-stone-600 hover:text-stone-900">

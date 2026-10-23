@@ -25,8 +25,8 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // Redirects, auth callbacks and public review pages are not localized pages.
-  if (pathname.startsWith("/q/") || pathname.startsWith("/auth/") || pathname.startsWith("/r/")) return NextResponse.next();
+  // Redirects, auth callbacks and public review and menu pages are not localized pages.
+  if (/^\/(q|auth|r|m)\//.test(pathname)) return NextResponse.next();
 
   // Where the request goes: French pages as-is, English pages rewritten to /en.
   if (pathname === "/en" || pathname.startsWith("/en/")) {

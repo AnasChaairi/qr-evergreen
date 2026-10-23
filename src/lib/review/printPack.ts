@@ -1,4 +1,4 @@
-// Browser-only: builds the review kit print pack as one PDF, one page per item.
+// Browser-only: builds a print pack (review kit or menu) as one PDF, one page per item.
 // Each item's code carries its own ?s= tag so scans can be told apart.
 
 import type { PDFDocument, PDFFont, PDFImage, PDFPage, RGB } from "pdf-lib";
@@ -16,6 +16,9 @@ export type PackOptions = {
   design: PrintDesign;
   logo: Blob | null;
   text: PackText;
+  items?: readonly PrintItemId[]; // default: every item
+  stars?: boolean; // review packs show five stars; default true
+  documentTitle?: string;
 };
 
 type Assets = {
@@ -41,7 +44,7 @@ export async function buildPrintPack(options: PackOptions, deps: PackDeps = brow
 export async function buildPrintPackBytes(options: PackOptions, deps: PackDeps): Promise<Uint8Array> {
   const pdfLib = await import("pdf-lib");
   const pdf = await pdfLib.PDFDocument.create();
-  pdf.setTitle(`${options.businessName} review kit`);
+  pdf.setTitle(options.documentTitle ?? `${options.businessName} review kit`);
   pdf.setCreator("QR Evergreen");
   const assets: Assets = {
     pdfLib,
@@ -50,7 +53,7 @@ export async function buildPrintPackBytes(options: PackOptions, deps: PackDeps):
     logo: options.logo ? await pdf.embedPng(await deps.logoPng(options.logo)) : null,
   };
 
-  for (const item of PRINT_ITEMS) {
+  for (const item of PRINT_ITEMS.filter((i) => !options.items || options.items.includes(i.id))) {
     const width = item.widthMm * MM;
     const height = item.heightMm * MM;
     if (item.id === "table-tent") {
@@ -174,7 +177,7 @@ function drawFace(page: PDFPage, w: number, h: number, qr: PDFImage, options: Pa
     const p = qrSize * 0.06;
     page.drawRectangle({ x: (w - qrSize) / 2 - p, y: qrY - p, width: qrSize + p * 2, height: qrSize + p * 2, color: white });
     page.drawImage(qr, { x: (w - qrSize) / 2, y: qrY, width: qrSize, height: qrSize });
-    drawStars(page, w / 2, qrY - p - starRadius * 1.6, starRadius, colors.star);
+    if (options.stars !== false) drawStars(page, w / 2, qrY - p - starRadius * 1.6, starRadius, colors.star);
     const after = drawCentered(page, options.text.subline, assets.bold, w, qrY - p - starRadius * 3, maxText, sublineSize, colors.accent);
     drawCentered(page, options.text.scanHint, assets.regular, w, after, maxText, hintSize, colors.muted);
     return;
@@ -195,7 +198,7 @@ function drawFace(page: PDFPage, w: number, h: number, qr: PDFImage, options: Pa
     y -= pad * 0.3;
   }
   y = drawCentered(page, options.text.headline, assets.regular, w, y, maxText, headlineSize, colors.text);
-  drawStars(page, w / 2, y - starRadius, starRadius, colors.star);
+  if (options.stars !== false) drawStars(page, w / 2, y - starRadius, starRadius, colors.star);
   y -= starRadius * 2 + pad * 0.6;
 
   // The code takes whatever height is left above the call to action.
@@ -246,7 +249,7 @@ function drawWide(page: PDFPage, w: number, h: number, pad: number, qr: PDFImage
   let y = h - pad * 1.2;
   y = drawLeft(page, options.businessName, assets.bold, left, y, maxWidth, h * 0.1, colors.text);
   y = drawLeft(page, options.text.headline, assets.regular, left, y - pad * 0.2, maxWidth, h * 0.07, colors.text);
-  drawStars(page, left + starRadius * 5.6, y - starRadius * 1.2, starRadius, colors.star);
+  if (options.stars !== false) drawStars(page, left + starRadius * 5.6, y - starRadius * 1.2, starRadius, colors.star);
   y -= starRadius * 2.4 + pad * 0.6;
   y = drawLeft(page, options.text.subline, assets.bold, left, y, maxWidth, h * 0.085, colors.onDark ? white : colors.accent);
   drawLeft(page, options.text.scanHint, assets.regular, left, y, maxWidth, h * 0.055, colors.muted);
