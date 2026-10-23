@@ -27,6 +27,27 @@ describe("print pack", () => {
     expect(Math.round(stand.getWidth())).toBe(298); // 105 mm
   });
 
+  it("builds only the chosen items, without stars, for a menu pack", async () => {
+    const bytes = await buildPrintPackBytes(
+      {
+        businessName: "Café Atlas",
+        shortUrl: "https://qrev.link/AbC1234",
+        color: "#166534",
+        design: "classic",
+        logo: null,
+        text: { headline: "Notre menu", subline: "Scannez pour voir le menu", scanHint: "Scannez avec l'appareil photo", fold: "Pliez ici" },
+        items: ["counter-stand", "table-tent", "window-sticker"],
+        stars: false,
+        documentTitle: "Café Atlas menu",
+      },
+      deps,
+    );
+    if (process.env.PACK_OUT) writeFileSync(`${process.env.PACK_OUT}/pack-menu.pdf`, bytes);
+    const pdf = await PDFDocument.load(bytes);
+    expect(pdf.getPageCount()).toBe(3);
+    expect(pdf.getTitle()).toBe("Café Atlas menu");
+  });
+
   it("drops characters the PDF font cannot draw", () => {
     const font = { encodeText: (c: string) => { if (c.codePointAt(0)! > 255) throw new Error("x"); return c; } };
     expect(safeText(font as never, "Café 🌿")).toBe("Café");
