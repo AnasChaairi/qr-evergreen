@@ -48,6 +48,18 @@ begin
   end;
 end $$;
 
+-- Every scan partition has RLS on and no API grants (reads go through scans).
+do $$
+begin
+  perform public.ensure_scans_partition('2031-01-01');
+  assert not exists (
+    select 1 from pg_inherits i join pg_class c on c.oid = i.inhrelid
+    where i.inhparent = 'public.scans'::regclass and not c.relrowsecurity
+  ), 'scan partitions have RLS';
+  assert not has_table_privilege('anon', 'public.scans_default', 'select'), 'anon cannot read a partition';
+  assert not has_function_privilege('anon', 'public.my_workspace_ids()', 'execute'), 'anon cannot call helpers';
+end $$;
+
 -- Alice only sees her own rows.
 set local role authenticated;
 set local request.jwt.claim.sub = '00000000-0000-0000-0000-00000000000a';
