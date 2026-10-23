@@ -25,30 +25,32 @@ export async function proxy(request: NextRequest) {
     return NextResponse.rewrite(url);
   }
 
-  // Redirects and auth callbacks are not localized pages.
-  if (pathname.startsWith("/q/") || pathname.startsWith("/auth/")) return NextResponse.next();
+  // Redirects, auth callbacks and public review pages are not localized pages.
+  if (pathname.startsWith("/q/") || pathname.startsWith("/auth/") || pathname.startsWith("/r/")) return NextResponse.next();
 
-  let response: NextResponse;
-  if (pathname === "/fr" || pathname.startsWith("/fr/")) {
-    response = NextResponse.next();
-  } else if (pathname === "/en" || pathname.startsWith("/en/")) {
+  // Where the request goes: French pages as-is, English pages rewritten to /en.
+  if (pathname === "/en" || pathname.startsWith("/en/")) {
     // Keep one public URL per page: /en/... permanently redirects to the root.
     const url = request.nextUrl.clone();
     url.pathname = pathname.slice(3) || "/";
     return NextResponse.redirect(url, 308);
-  } else {
-    // English pages live at the root but are rendered by the internal /en route.
-    const url = request.nextUrl.clone();
-    url.pathname = `/en${pathname === "/" ? "" : pathname}`;
-    response = NextResponse.rewrite(url);
   }
+  const isFrench = pathname === "/fr" || pathname.startsWith("/fr/");
+  const target = request.nextUrl.clone();
+  if (!isFrench) target.pathname = `/en${pathname === "/" ? "" : pathname}`;
+  const forward = () => (isFrench ? NextResponse.next({ request }) : NextResponse.rewrite(target, { request }));
 
-  // Signed-in areas refresh the Supabase session cookie on every request.
+  let response = forward();
+
+  // Signed-in areas refresh the Supabase session on every request. Refreshed
+  // cookies go on the forwarded request (so the page sees them) and the response.
   if (SUPABASE_URL && SUPABASE_KEY && /^(\/fr)?\/(dashboard|login)(\/|$)/.test(pathname)) {
     const supabase = createServerClient(SUPABASE_URL, SUPABASE_KEY, {
       cookies: {
         getAll: () => request.cookies.getAll(),
         setAll: (cookiesToSet) => {
+          for (const { name, value } of cookiesToSet) request.cookies.set(name, value);
+          response = forward();
           for (const { name, value, options } of cookiesToSet) response.cookies.set(name, value, options);
         },
       },

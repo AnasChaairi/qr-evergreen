@@ -52,6 +52,10 @@ Setup:
 
 Scans are partitioned by month. The migration creates partitions for the next 12 months plus a default partition, so inserts never fail; schedule `select public.ensure_scans_partition((now() + interval '1 month')::date);` monthly (for example with `pg_cron`) to keep creating them.
 
+## Review QR kit
+
+Owners find their business with the Places API (`GOOGLE_PLACES_API_KEY`, signed-in users only) or paste a review link, and get one dynamic code. With no extra platforms it opens Google's review form directly; with TripAdvisor, Facebook, Trustpilot or Booking links it opens `/r/{slug}`, a page with no ads that shows every visitor the same links (no review gating). The print pack (`src/lib/review/printPack.ts`) is built in the browser with pdf-lib: counter stand, table tent, window sticker, receipt card and staff badge, each with its own `?s=` tag so the dashboard shows scans per printed item.
+
 ## Adding a tool page
 
 1. Add the encoder and its tests in `src/lib/qr/payloads.ts`.

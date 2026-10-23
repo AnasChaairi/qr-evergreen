@@ -89,7 +89,10 @@ export default async function CodePage({ params }: PageProps<"/[lang]/dashboard/
 
         <div className="grid gap-8 lg:grid-cols-[1fr_260px]">
           <section className="space-y-6 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-            <DestinationForm locale={lang} id={code.id} destination={code.destination_url} t={t.code} errors={t.errors} />
+            <DestinationForm locale={lang} id={code.id} destination={code.destination_url}
+              t={{ destination: t.code.destination, save: t.code.save, saved: t.code.saved }}
+              errors={t.errors}
+            />
             <form action={setArchived}>
               <input type="hidden" name="locale" value={lang} />
               <input type="hidden" name="id" value={code.id} />
