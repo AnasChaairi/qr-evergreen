@@ -29,6 +29,7 @@ npm run dev
 | `npm run typecheck` | Generate route types and run `tsc` |
 | `npm test` | Unit tests (payload encoders, frame layout, URLs) |
 | `npm run test:e2e` | Playwright smoke test against a production build |
+| `npm run test:db` | Applies the migrations to a scratch Postgres and runs the row-level security tests (needs `DATABASE_URL`) |
 
 ## Project layout
 
@@ -37,6 +38,19 @@ npm run dev
 - `src/lib/qr/render.ts`: browser-only rendering and SVG/PNG/PDF export
 - `src/content/`: all page copy, in English and French
 - `src/app/[lang]/`: home page, tool pages and info pages
+
+## Accounts and dynamic codes (Supabase)
+
+Dynamic codes point at a short link (`/q/{slug}`, or a short domain set in `NEXT_PUBLIC_SHORT_URL`). The redirect in `src/app/q/[slug]/route.ts` answers from cache, keeps the last good destination if the database is down, and logs the scan after responding. Billing never affects it: a code stops redirecting only if its owner archives it.
+
+Setup:
+
+1. Create a Supabase project and apply `supabase/migrations` (`supabase db push`, or paste the SQL in the SQL editor).
+2. In Authentication → URL configuration, set the site URL and add `https://<your-domain>/auth/callback` (and `http://localhost:3000/auth/callback` for local work) to the redirect URLs.
+3. Enable the Google provider if you want Google sign-in.
+4. Fill in the Supabase, Safe Browsing and `SCAN_HASH_SALT` variables from `.env.example`.
+
+Scans are partitioned by month. The migration creates partitions for the next 12 months plus a default partition, so inserts never fail; schedule `select public.ensure_scans_partition((now() + interval '1 month')::date);` monthly (for example with `pg_cron`) to keep creating them.
 
 ## Adding a tool page
 
