@@ -89,7 +89,10 @@ const INFO_LABELS: Record<Locale, Record<"about" | "contact" | "privacy" | "term
 export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: string; signedIn: boolean }) {
   const ui = UI[locale];
   const other = LOCALES.find((l) => l !== locale)!;
-  const strings = locale === "fr" ? { dashboard: "Tableau de bord", signOut: "Se déconnecter" } : { dashboard: "Dashboard", signOut: "Sign out" };
+  const strings =
+    locale === "fr"
+      ? { dashboard: "Codes", reviewKits: "Kits avis", signOut: "Se déconnecter" }
+      : { dashboard: "Codes", reviewKits: "Review kits", signOut: "Sign out" };
   const prefix = (l: Locale) => (l === "fr" ? "/fr" : "");
   return (
     <header className="border-b border-stone-200 bg-white">
@@ -103,6 +106,9 @@ export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: st
             <>
               <Link href={`${prefix(locale)}/dashboard`} className="text-stone-600 hover:text-stone-900">
                 {strings.dashboard}
+              </Link>
+              <Link href={`${prefix(locale)}/dashboard/review-kits`} className="text-stone-600 hover:text-stone-900">
+                {strings.reviewKits}
               </Link>
               <form action={`/auth/signout?locale=${locale}`} method="post">
                 <button type="submit" className="text-stone-600 hover:text-stone-900">

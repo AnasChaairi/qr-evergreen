@@ -25,7 +25,11 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/q/[sl
   const country = request.headers.get("x-vercel-ip-country");
   const city = decodeHeader(request.headers.get("x-vercel-ip-city"));
 
-  after(() => logScan(target.id, ua, ip, country, city));
+  // ?s=counter-stand tells us which printed item was scanned.
+  const rawSource = request.nextUrl.searchParams.get("s");
+  const source = rawSource && /^[a-z][a-z0-9-]{0,23}$/.test(rawSource) ? rawSource : null;
+
+  after(() => logScan(target.id, ua, ip, country, city, source));
 
   return new Response(null, {
     status: 302,
@@ -33,7 +37,14 @@ export async function GET(request: NextRequest, { params }: RouteContext<"/q/[sl
   });
 }
 
-async function logScan(codeId: string, ua: string, ip: string, country: string | null, city: string | null) {
+async function logScan(
+  codeId: string,
+  ua: string,
+  ip: string,
+  country: string | null,
+  city: string | null,
+  source: string | null,
+) {
   const info = parseUserAgent(ua);
   if (info.device === "bot") return; // link previews are not scans
   try {
@@ -55,6 +66,7 @@ async function logScan(codeId: string, ua: string, ip: string, country: string |
       os: info.os,
       browser: info.browser,
       visitor_hash: visitorHash,
+      source,
       is_unique: (count ?? 0) === 0,
     });
   } catch (error) {

@@ -60,7 +60,14 @@ export default async function DashboardPage({ params }: PageProps<"/[lang]/dashb
 
         <CreateCodeForm
           locale={lang}
-          t={t.home}
+          t={{
+            newCode: t.home.newCode,
+            name: t.home.name,
+            namePlaceholder: t.home.namePlaceholder,
+            destination: t.home.destination,
+            destinationPlaceholder: t.home.destinationPlaceholder,
+            create: t.home.create,
+          }}
           errors={t.errors}
           disabled={used >= limit}
         />

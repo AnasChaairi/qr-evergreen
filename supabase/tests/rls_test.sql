@@ -19,8 +19,21 @@ insert into public.qr_codes (workspace_id, short_slug, destination_url)
 select w.id, case when p.email like 'alice%' then 'AAAAAAA' else 'BBBBBBB' end, 'https://example.com'
 from public.workspaces w join public.profiles p on p.id = w.owner_id;
 
-insert into public.scans (qr_code_id, country, is_unique)
-select id, 'MA', true from public.qr_codes;
+insert into public.scans (qr_code_id, country, is_unique, source)
+select id, 'MA', true, 'counter-stand' from public.qr_codes;
+
+insert into public.review_kits (workspace_id, qr_code_id, business_name, review_url)
+select workspace_id, id, 'Kit ' || short_slug, 'https://search.google.com/local/writereview?placeid=x' from public.qr_codes;
+
+-- Free-text sources are rejected.
+do $$
+begin
+  begin
+    insert into public.scans (qr_code_id, source) values ((select id from public.qr_codes limit 1), 'Robert''); drop table');
+    raise exception 'bad source should be rejected';
+  exception when check_violation then null;
+  end;
+end $$;
 
 -- Alice only sees her own rows.
 set local role authenticated;
@@ -32,6 +45,8 @@ begin
   assert (select count(*) from public.scans) = 1, 'alice sees her scans';
   assert (select count(*) from public.profiles) = 1, 'alice sees her profile';
   assert (select count(*) from public.scan_daily_counts(array(select id from public.qr_codes), now() - interval '1 day')) = 1, 'daily counts';
+  assert (select count(*) from public.review_kits) = 1, 'alice sees her kit';
+  assert (select source from public.scan_source_counts((select id from public.qr_codes), now() - interval '1 day')) = 'counter-stand', 'source counts';
 end $$;
 
 -- Alice can change her destination but not bob's.
@@ -50,6 +65,12 @@ begin
   begin
     insert into public.scans (qr_code_id) values ((select id from public.qr_codes limit 1));
     raise exception 'scan insert should be denied';
+  exception when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.review_kits (workspace_id, business_name, review_url)
+    values ((select public.my_workspace_ids() limit 1), 'x', 'https://x.example');
+    raise exception 'kit insert should be denied';
   exception when insufficient_privilege then null;
   end;
   begin
