@@ -60,6 +60,10 @@ Owners find their business with the Places API (`GOOGLE_PLACES_API_KEY`, signed-
 
 Each menu gets one dynamic code that opens `/m/{slug}`, a mobile page with no ads: the menu itself, call and WhatsApp buttons, and opening hours, in up to four languages (EN, FR, AR with right-to-left layout, ES). A menu is either an uploaded PDF or image (all plans) or built in the dashboard with sections, dishes, prices, photos and the 14 EU allergens (paid plans). Files go to the public `menu-files` Storage bucket, created by the migration with a 10 MB limit: the browser resizes photos, asks a server action for a one-time signed upload URL, and uploads straight to Storage. Public menu data is cached under the `menu:{slug}` tag and refreshed on every edit. The table card and sticker pack reuses the review kit's print code.
 
+## Plans and payments
+
+Prices live in `src/lib/billing/catalog.ts` and limits in `src/lib/dynamic/plans.ts`. Checkout, the customer portal and subscription webhooks go through Lemon Squeezy (`src/lib/billing/lemonsqueezy.ts`), configured with the `LEMONSQUEEZY_*` variables in `.env.example`. The webhook at `/api/billing/webhook` verifies the `X-Signature` HMAC, ignores out-of-order snapshots and only ever writes the plan columns on `profiles`; it never touches `qr_codes`, so billing cannot switch a code off. A lapsed plan keeps its features until the period end, then falls back to free limits (`effectivePlan`). The pricing page is `/pricing` (`/fr/tarifs`) and shows the written promise, as does `/dashboard/billing`. Paid users see no ads: the dashboard sets a `qre_paid` cookie that `AdSlot` checks, so tool pages stay static.
+
 ## Adding a tool page
 
 1. Add the encoder and its tests in `src/lib/qr/payloads.ts`.

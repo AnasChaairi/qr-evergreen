@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useSyncExternalStore } from "react";
+import { PAID_COOKIE } from "./PlanCookie";
 
 // AdSense unit. Renders nothing until NEXT_PUBLIC_ADSENSE_CLIENT and the slot id
 // are configured, so pages stay ad-free before AdSense approval.
 // Placement rule: never between the user and the download button.
+// Paid plans have no ads: the dashboard sets a cookie we check here, so the
+// tool pages stay static.
 
 const CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
 
@@ -20,19 +23,27 @@ declare global {
   }
 }
 
+const noSubscribe = () => () => {};
+
 export function AdSlot({ placement, className = "" }: { placement: keyof typeof SLOTS; className?: string }) {
   const slot = SLOTS[placement];
+  // null while server rendering: nothing is shown until the cookie is read.
+  const paid = useSyncExternalStore(
+    noSubscribe,
+    () => document.cookie.split("; ").includes(`${PAID_COOKIE}=1`),
+    () => null,
+  );
 
   useEffect(() => {
-    if (!CLIENT || !slot) return;
+    if (!CLIENT || !slot || paid !== false) return;
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch {
       // Ad blockers throw here; the page works without ads.
     }
-  }, [slot]);
+  }, [slot, paid]);
 
-  if (!CLIENT || !slot) return null;
+  if (!CLIENT || !slot || paid !== false) return null;
   return (
     <div className={className} aria-label="Advertisement">
       <ins

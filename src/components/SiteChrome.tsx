@@ -19,6 +19,9 @@ export function Header({ locale, page }: { locale: Locale; page: PageId }) {
           <span>{ui.siteName}</span>
         </Link>
         <nav className="flex items-center gap-4 text-sm">
+          <Link href={pathFor(locale, "pricing")} className="text-stone-600 hover:text-stone-900">
+            {INFO_LABELS[locale].pricing}
+          </Link>
           <Link href={pathFor(locale, "about")} className="hidden text-stone-600 hover:text-stone-900 sm:inline">
             {ui.nav.about}
           </Link>
@@ -63,7 +66,7 @@ export function Footer({ locale }: { locale: Locale }) {
         <div>
           <h2 className="mb-3 text-sm font-semibold text-stone-900">{ui.footer.company}</h2>
           <ul className="space-y-2 text-sm">
-            {(["about", "contact", "privacy", "terms"] as const).map((page) => (
+            {(["pricing", "about", "contact", "privacy", "terms"] as const).map((page) => (
               <li key={page}>
                 <Link href={pathFor(locale, page)} className="text-stone-600 hover:text-stone-900">
                   {INFO_LABELS[locale][page]}
@@ -80,9 +83,9 @@ export function Footer({ locale }: { locale: Locale }) {
   );
 }
 
-const INFO_LABELS: Record<Locale, Record<"about" | "contact" | "privacy" | "terms", string>> = {
-  en: { about: "About", contact: "Contact", privacy: "Privacy", terms: "Terms" },
-  fr: { about: "À propos", contact: "Contact", privacy: "Confidentialité", terms: "Conditions" },
+const INFO_LABELS: Record<Locale, Record<"pricing" | "about" | "contact" | "privacy" | "terms", string>> = {
+  en: { pricing: "Pricing", about: "About", contact: "Contact", privacy: "Privacy", terms: "Terms" },
+  fr: { pricing: "Tarifs", about: "À propos", contact: "Contact", privacy: "Confidentialité", terms: "Conditions" },
 };
 
 // Header for signed-in pages: same brand, a dashboard link and sign out.
@@ -91,8 +94,8 @@ export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: st
   const other = LOCALES.find((l) => l !== locale)!;
   const strings =
     locale === "fr"
-      ? { dashboard: "Codes", reviewKits: "Kits avis", menus: "Menus", signOut: "Se déconnecter" }
-      : { dashboard: "Codes", reviewKits: "Review kits", menus: "Menus", signOut: "Sign out" };
+      ? { dashboard: "Codes", reviewKits: "Kits avis", menus: "Menus", plan: "Offre", signOut: "Se déconnecter" }
+      : { dashboard: "Codes", reviewKits: "Review kits", menus: "Menus", plan: "Plan", signOut: "Sign out" };
   const prefix = (l: Locale) => (l === "fr" ? "/fr" : "");
   return (
     <header className="border-b border-stone-200 bg-white">
@@ -112,6 +115,9 @@ export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: st
               </Link>
               <Link href={`${prefix(locale)}/dashboard/menus`} className="text-stone-600 hover:text-stone-900">
                 {strings.menus}
+              </Link>
+              <Link href={`${prefix(locale)}/dashboard/billing`} className="text-stone-600 hover:text-stone-900">
+                {strings.plan}
               </Link>
               <form action={`/auth/signout?locale=${locale}`} method="post">
                 <button type="submit" className="text-stone-600 hover:text-stone-900">
