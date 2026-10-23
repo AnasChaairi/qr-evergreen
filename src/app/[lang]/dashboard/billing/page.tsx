@@ -16,9 +16,8 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/dashboard/
   return { title: BILLING[lang].dashboard.metaTitle, robots: { index: false } };
 }
 
-const buttonClass =
-  "w-full rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800 disabled:cursor-not-allowed disabled:bg-stone-300";
-const outlineClass = "w-full rounded-lg border border-brand-700 px-4 py-2 text-sm font-semibold text-brand-800 hover:bg-brand-50";
+const buttonClass = "btn btn-primary";
+const outlineClass = "btn btn-secondary w-full";
 
 export default async function BillingPage({ params, searchParams }: PageProps<"/[lang]/dashboard/billing">) {
   const { lang } = await params;
@@ -40,21 +39,21 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
   return (
     <>
       <AppHeader locale={lang} path="/dashboard/billing" signedIn />
-      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-8">
-        <h1 className="text-2xl font-bold text-stone-900">{t.dashboard.h1}</h1>
+      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6">
+        <h1 className="page-title">{t.dashboard.h1}</h1>
 
-        {status === "thanks" && <p className="rounded-xl bg-brand-50 px-4 py-3 text-sm text-brand-800">{t.dashboard.thanks}</p>}
+        {status === "thanks" && <p className="notice">{t.dashboard.thanks}</p>}
         {error && (
-          <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800">
+          <p role="alert" className="notice-error">
             {configured ? t.dashboard.checkoutFailed : t.dashboard.notConfigured}
           </p>
         )}
 
-        <section className="space-y-2 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-          <p className="text-sm text-stone-600">{t.dashboard.current}</p>
-          <p className="text-2xl font-bold text-stone-900">{t.planNames[account.plan]}</p>
+        <section className="space-y-2 card">
+          <p className="text-[15px] text-stone-600">{t.dashboard.current}</p>
+          <p className="page-title">{t.planNames[account.plan]}</p>
           {profile && profile.plan !== "free" && !lapsed && (
-            <p className="text-sm text-stone-600">
+            <p className="text-[15px] text-stone-600">
               {t.dashboard.status[profile.plan_status as keyof typeof t.dashboard.status]}
               {periodEnd && ` · ${profile.plan_status === "active" ? t.dashboard.renews(date(periodEnd)) : t.dashboard.ends(date(periodEnd))}`}
             </p>
@@ -63,7 +62,7 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
           {profile?.subscription_id && configured && (
             <form action={openBillingPortal} className="pt-2">
               <input type="hidden" name="locale" value={lang} />
-              <button type="submit" className="text-sm font-medium text-brand-700 underline">
+              <button type="submit" className="btn-link text-[15px]">
                 {t.dashboard.manage}
               </button>
             </form>
@@ -74,10 +73,10 @@ export default async function BillingPage({ params, searchParams }: PageProps<"/
         {account.plan === "free" && (
           <section className="grid gap-4 sm:grid-cols-2">
             {PAID_PLANS.map((plan) => (
-              <div key={plan} className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
+              <div key={plan} className="space-y-4 card">
                 <div>
-                  <h2 className="text-lg font-semibold text-stone-900">{t.planNames[plan]}</h2>
-                  <p className="text-sm text-stone-600">
+                  <h2 className="text-xl font-bold text-stone-900">{t.planNames[plan]}</h2>
+                  <p className="text-[15px] text-stone-600">
                     {t.pricing.rows[1].label}: {t.pricing.rows[1].values[plan]} · {t.pricing.rows[5].label}: {t.pricing.rows[5].values[plan]}
                   </p>
                 </div>

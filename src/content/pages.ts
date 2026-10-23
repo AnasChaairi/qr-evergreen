@@ -8,9 +8,9 @@ export const HOME: Record<Locale, HomeContent> = {
     metaTitle: "Free QR Code Generator — No Expiration, No Sign-up | QR Evergreen",
     metaDescription:
       "Make free QR codes for WiFi, links, WhatsApp, Google reviews and contact cards. No sign-up, no scan limit, and they never expire.",
-    h1: "Free QR codes that never die",
+    h1: "Free QR codes for your business, ready in a minute",
     intro:
-      "Make a QR code for WiFi, a link, WhatsApp, Google reviews or a contact card in seconds. No sign-up, no scan limit, and no trial that switches your printed codes off.",
+      "Pick what the code should open, type it in, and download. Codes for WiFi, links, WhatsApp, Google reviews and contact cards keep working forever, even on printed menus and signs.",
     toolsHeading: "Free QR code tools",
     toolBlurbs: {
       wifi: "Guests join your network without typing the password.",
@@ -34,6 +34,36 @@ export const HOME: Record<Locale, HomeContent> = {
         body: "Codes are drawn in your browser. What you type is not sent to our servers.",
       },
     ],
+    badge: "Free forever. No sign-up needed.",
+    trust: ["Never expires", "Unlimited scans", "Made on your device, stays private"],
+    business: {
+      heading: "Made for cafés, shops and salons",
+      intro: "With a free account you can change where a printed code goes, and see how many people scan it.",
+      cta: "Create a free account",
+      cards: [
+        {
+          tag: "Review kit",
+          title: "Get more Google reviews",
+          body: "Find your business, pick a design and print table cards and counter stickers that open your review form.",
+          cta: "Make a review kit",
+          href: "review-kits",
+        },
+        {
+          tag: "Menu QR",
+          title: "Put your menu on every table",
+          body: "Upload a photo or PDF of your menu, or build one with prices and photos. Change it any day; the printed code stays the same.",
+          cta: "Make a menu QR",
+          href: "menus",
+        },
+        {
+          tag: "Editable codes",
+          title: "See how many people scan",
+          body: "Change the link behind a printed code and count scans by day. Free editable codes never expire.",
+          cta: "Start free",
+          href: "codes",
+        },
+      ],
+    },
     faq: [
       {
         q: "Are these QR codes really free?",
@@ -53,9 +83,9 @@ export const HOME: Record<Locale, HomeContent> = {
     metaTitle: "Générateur de QR code gratuit — sans expiration ni inscription | QR Evergreen",
     metaDescription:
       "Créez des QR codes gratuits pour le WiFi, un lien, WhatsApp, les avis Google et les cartes de contact. Sans inscription, sans limite, sans expiration.",
-    h1: "Des QR codes gratuits qui n'expirent jamais",
+    h1: "Des QR codes gratuits pour votre commerce, prêts en une minute",
     intro:
-      "Créez en quelques secondes un QR code pour le WiFi, un lien, WhatsApp, les avis Google ou une carte de contact. Sans inscription, sans limite de scans, et sans essai qui désactive vos codes imprimés.",
+      "Choisissez ce que le code doit ouvrir, remplissez, téléchargez. WiFi, lien, WhatsApp, avis Google ou carte de contact : vos codes fonctionnent pour toujours, même imprimés sur vos menus et vitrines.",
     toolsHeading: "Outils QR code gratuits",
     toolBlurbs: {
       wifi: "Vos clients se connectent sans taper le mot de passe.",
@@ -79,6 +109,36 @@ export const HOME: Record<Locale, HomeContent> = {
         body: "Les codes sont dessinés dans votre navigateur. Ce que vous tapez n'est pas envoyé à nos serveurs.",
       },
     ],
+    badge: "Gratuit pour toujours. Sans inscription.",
+    trust: ["N'expire jamais", "Scans illimités", "Créé sur votre appareil, reste privé"],
+    business: {
+      heading: "Pensé pour les cafés, boutiques et salons",
+      intro: "Avec un compte gratuit, changez la destination d'un code déjà imprimé et voyez combien de personnes le scannent.",
+      cta: "Créer un compte gratuit",
+      cards: [
+        {
+          tag: "Kit avis",
+          title: "Obtenez plus d'avis Google",
+          body: "Trouvez votre commerce, choisissez un design et imprimez chevalets et autocollants qui ouvrent votre formulaire d'avis.",
+          cta: "Créer un kit avis",
+          href: "review-kits",
+        },
+        {
+          tag: "Menu QR",
+          title: "Votre menu sur chaque table",
+          body: "Envoyez une photo ou un PDF de votre menu, ou créez-le avec prix et photos. Modifiez-le quand vous voulez ; le code imprimé ne change pas.",
+          cta: "Créer un menu QR",
+          href: "menus",
+        },
+        {
+          tag: "Codes modifiables",
+          title: "Voyez combien de personnes scannent",
+          body: "Changez le lien derrière un code imprimé et comptez les scans par jour. Les codes modifiables gratuits n'expirent jamais.",
+          cta: "Commencer gratuitement",
+          href: "codes",
+        },
+      ],
+    },
     faq: [
       {
         q: "Ces QR codes sont-ils vraiment gratuits ?",

@@ -23,14 +23,14 @@ test("WiFi tool page makes a code and downloads all formats", async ({ page }) =
 test("frame and logo options render", async ({ page }) => {
   await page.goto("/fr/qr-code-lien");
   await page.getByLabel("Adresse du site").fill("exemple.fr/menu");
-  await page.getByLabel("Ajouter un cadre avec un appel à l'action").check();
+  await page.getByLabel("Ajouter un cadre avec un petit message").check();
   await expect(page.getByLabel("Texte du cadre")).toHaveValue("Scannez-moi");
   await expect(page.getByRole("img", { name: "Aperçu" })).toBeVisible();
 });
 
 test("home page switches code type and shows validation", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("tab", { name: "WhatsApp" }).click();
+  await page.getByRole("radio", { name: /WhatsApp/ }).click();
   await page.getByLabel("WhatsApp number with country code").fill("12");
   await expect(page.getByText("Use the full international number")).toBeVisible();
   await page.getByLabel("WhatsApp number with country code").fill("+33 6 12 34 56 78");

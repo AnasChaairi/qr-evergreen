@@ -35,17 +35,17 @@ export default async function ReviewKitsPage({ params }: PageProps<"/[lang]/dash
   return (
     <>
       <AppHeader locale={lang} path="/dashboard/review-kits" signedIn />
-      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-8">
+      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6">
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-stone-900">{t.h1}</h1>
-          <p className="text-stone-600">{t.intro}</p>
+          <h1 className="page-title">{t.h1}</h1>
+          <p className="text-[17px] text-stone-600">{t.intro}</p>
         </div>
 
         {kits && kits.length > 0 ? (
-          <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200 bg-white">
+          <ul className="divide-y divide-stone-200 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-soft">
             {kits.map((kit) => (
               <li key={kit.id}>
-                <Link href={`${prefix}/dashboard/review-kits/${kit.id}`} className="flex items-center justify-between gap-4 p-4 hover:bg-stone-50">
+                <Link href={`${prefix}/dashboard/review-kits/${kit.id}`} className="flex items-center justify-between gap-4 p-5 transition-colors hover:bg-brand-50">
                   <span className="font-medium text-stone-900">{kit.business_name}</span>
                   <span className="text-sm text-brand-700">{t.list.open} →</span>
                 </Link>
@@ -53,11 +53,11 @@ export default async function ReviewKitsPage({ params }: PageProps<"/[lang]/dash
             ))}
           </ul>
         ) : (
-          <p className="text-stone-600">{t.list.empty}</p>
+          <p className="text-[17px] text-stone-600">{t.list.empty}</p>
         )}
 
         {atLimit ? (
-          <p className="text-sm text-stone-600">{t.errors.kitLimit}</p>
+          <p className="text-[15px] text-stone-600">{t.errors.kitLimit}</p>
         ) : (
           <CreateKitForm locale={lang} t={reviewClientStrings(lang)} errors={errors} disabled={atLimit} />
         )}

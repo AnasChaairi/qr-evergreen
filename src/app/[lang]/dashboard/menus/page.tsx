@@ -36,19 +36,19 @@ export default async function MenusPage({ params }: PageProps<"/[lang]/dashboard
   return (
     <>
       <AppHeader locale={lang} path="/dashboard/menus" signedIn />
-      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-8">
+      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6">
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-stone-900">{t.h1}</h1>
-          <p className="text-stone-600">{t.intro}</p>
+          <h1 className="page-title">{t.h1}</h1>
+          <p className="text-[17px] text-stone-600">{t.intro}</p>
         </div>
 
         {menus && menus.length > 0 ? (
-          <ul className="divide-y divide-stone-200 rounded-2xl border border-stone-200 bg-white">
+          <ul className="divide-y divide-stone-200 overflow-hidden rounded-3xl border border-stone-200 bg-white shadow-soft">
             {menus.map((menu) => (
               <li key={menu.id}>
-                <Link href={`${prefix}/dashboard/menus/${menu.id}`} className="flex items-center justify-between gap-4 p-4 hover:bg-stone-50">
+                <Link href={`${prefix}/dashboard/menus/${menu.id}`} className="flex items-center justify-between gap-4 p-5 transition-colors hover:bg-brand-50">
                   <span>
-                    <span className="block font-medium text-stone-900">{menu.title}</span>
+                    <span className="block text-[17px] font-bold text-stone-900">{menu.title}</span>
                     <span className="block text-sm text-stone-500">{menu.mode === "builder" ? t.list.builder : t.list.file}</span>
                   </span>
                   <span className="text-sm text-brand-700">{t.list.open} →</span>
@@ -57,13 +57,13 @@ export default async function MenusPage({ params }: PageProps<"/[lang]/dashboard
             ))}
           </ul>
         ) : (
-          <p className="text-stone-600">{t.list.empty}</p>
+          <p className="text-[17px] text-stone-600">{t.list.empty}</p>
         )}
 
         {atMenuLimit ? (
-          <p className="text-sm text-stone-600">{t.errors.menuLimit}</p>
+          <p className="text-[15px] text-stone-600">{t.errors.menuLimit}</p>
         ) : atCodeLimit ? (
-          <p className="text-sm text-stone-600">{errors.limit}</p>
+          <p className="text-[15px] text-stone-600">{errors.limit}</p>
         ) : (
           <CreateMenuForm locale={lang} t={t} errors={errors} />
         )}

@@ -1,37 +1,61 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { UI } from "@/content/ui";
 import { TOOLS } from "@/content/tools";
 import { LOCALES, pathFor, type Locale, type PageId } from "@/lib/i18n";
 import { CODE_TYPES } from "@/lib/qr/payloads";
+import { GlobeIcon, GridIcon, LogoutIcon, MenuIcon, StarIcon, WalletIcon } from "./Icons";
 import { Logo } from "./Logo";
+
+const prefix = (l: Locale) => (l === "fr" ? "/fr" : "");
+
+function Brand({ locale, compact = false }: { locale: Locale; compact?: boolean }) {
+  return (
+    <Link href={pathFor(locale, "home")} className="flex shrink-0 items-center gap-2.5 text-stone-900">
+      <Logo />
+      <span className={`font-display text-lg font-bold tracking-tight sm:text-xl ${compact ? "hidden sm:inline" : ""}`}>{UI[locale].siteName}</span>
+    </Link>
+  );
+}
+
+function LanguageLink({ href, locale }: { href: string; locale: Locale }) {
+  const other = LOCALES.find((l) => l !== locale)!;
+  return (
+    <Link
+      href={href}
+      hrefLang={other}
+      lang={other}
+      className="inline-flex min-h-11 items-center gap-1.5 rounded-full border border-stone-300 px-3.5 text-[15px] font-medium text-stone-800 hover:border-brand-700 hover:bg-brand-50"
+    >
+      <GlobeIcon className="h-4 w-4" />
+      <span className="hidden sm:inline">{UI[locale].nav.switchLanguage}</span>
+      <span className="sm:hidden" aria-hidden="true">{other.toUpperCase()}</span>
+      <span className="sr-only sm:hidden">{UI[locale].nav.switchLanguage}</span>
+    </Link>
+  );
+}
 
 export function Header({ locale, page }: { locale: Locale; page: PageId }) {
   const ui = UI[locale];
   const other = LOCALES.find((l) => l !== locale)!;
+  const navLink = "hidden min-h-11 items-center rounded-full px-3 text-[15px] font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900 sm:inline-flex";
   return (
     <header className="border-b border-stone-200 bg-white">
-      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-10 focus:rounded focus:bg-white focus:px-3 focus:py-2">
+      <a href="#main" className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-10 focus:rounded-full focus:bg-white focus:px-4 focus:py-2">
         {ui.nav.skipToContent}
       </a>
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href={pathFor(locale, "home")} className="flex items-center gap-2 font-semibold text-stone-900">
-          <Logo />
-          <span>{ui.siteName}</span>
-        </Link>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link href={pathFor(locale, "pricing")} className="text-stone-600 hover:text-stone-900">
-            {INFO_LABELS[locale].pricing}
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <Brand locale={locale} />
+        <nav className="flex items-center gap-1 sm:gap-2">
+          <Link href={`${pathFor(locale, "home")}#tools`} className={navLink}>
+            {ui.nav.tools}
           </Link>
-          <Link href={pathFor(locale, "about")} className="hidden text-stone-600 hover:text-stone-900 sm:inline">
-            {ui.nav.about}
+          <Link href={pathFor(locale, "pricing")} className={navLink} aria-current={page === "pricing" ? "page" : undefined}>
+            {ui.nav.pricing}
           </Link>
-          <Link
-            href={pathFor(other, page)}
-            hrefLang={other}
-            lang={other}
-            className="rounded-full border border-stone-300 px-3 py-1 text-stone-700 hover:bg-stone-100"
-          >
-            {ui.nav.switchLanguage}
+          <LanguageLink href={pathFor(other, page)} locale={locale} />
+          <Link href={`${prefix(locale)}/login`} className="btn btn-primary min-h-11 whitespace-nowrap px-4 text-[15px]">
+            {ui.nav.signIn}
           </Link>
         </nav>
       </div>
@@ -42,21 +66,21 @@ export function Header({ locale, page }: { locale: Locale; page: PageId }) {
 export function Footer({ locale }: { locale: Locale }) {
   const ui = UI[locale];
   return (
-    <footer className="mt-16 border-t border-stone-200 bg-stone-50">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3">
+    <footer className="mt-20 bg-stone-900 text-stone-300">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:grid-cols-2 sm:px-6 lg:grid-cols-[1.4fr_1fr_1fr]">
         <div className="space-y-3">
-          <div className="flex items-center gap-2 font-semibold text-stone-900">
-            <Logo className="h-6 w-6" />
-            {ui.siteName}
+          <div className="flex items-center gap-2.5 text-white">
+            <Logo className="h-8 w-8" />
+            <span className="font-display text-xl font-bold">{ui.siteName}</span>
           </div>
-          <p className="text-sm leading-relaxed text-stone-600">{ui.footer.promise}</p>
+          <p className="max-w-sm text-[15px] leading-relaxed">{ui.footer.promise}</p>
         </div>
         <div>
-          <h2 className="mb-3 text-sm font-semibold text-stone-900">{ui.footer.tools}</h2>
-          <ul className="space-y-2 text-sm">
+          <h2 className="mb-3 font-sans text-[15px] font-bold tracking-normal text-white">{ui.footer.tools}</h2>
+          <ul className="space-y-1 text-[15px]">
             {CODE_TYPES.map((type) => (
               <li key={type}>
-                <Link href={pathFor(locale, type)} className="text-stone-600 hover:text-stone-900">
+                <Link href={pathFor(locale, type)} className="inline-flex min-h-9 items-center hover:text-white hover:underline">
                   {TOOLS[locale][type].h1}
                 </Link>
               </li>
@@ -64,11 +88,11 @@ export function Footer({ locale }: { locale: Locale }) {
           </ul>
         </div>
         <div>
-          <h2 className="mb-3 text-sm font-semibold text-stone-900">{ui.footer.company}</h2>
-          <ul className="space-y-2 text-sm">
+          <h2 className="mb-3 font-sans text-[15px] font-bold tracking-normal text-white">{ui.footer.company}</h2>
+          <ul className="space-y-1 text-[15px]">
             {(["pricing", "about", "contact", "privacy", "terms"] as const).map((page) => (
               <li key={page}>
-                <Link href={pathFor(locale, page)} className="text-stone-600 hover:text-stone-900">
+                <Link href={pathFor(locale, page)} className="inline-flex min-h-9 items-center hover:text-white hover:underline">
                   {INFO_LABELS[locale][page]}
                 </Link>
               </li>
@@ -76,7 +100,7 @@ export function Footer({ locale }: { locale: Locale }) {
           </ul>
         </div>
       </div>
-      <p className="pb-8 text-center text-xs text-stone-500">
+      <p className="border-t border-white/10 py-6 text-center text-sm text-stone-400">
         © {new Date().getFullYear()} {ui.siteName}. {ui.footer.rights}
       </p>
     </footer>
@@ -88,54 +112,60 @@ const INFO_LABELS: Record<Locale, Record<"pricing" | "about" | "contact" | "priv
   fr: { pricing: "Tarifs", about: "À propos", contact: "Contact", privacy: "Confidentialité", terms: "Conditions" },
 };
 
-// Header for signed-in pages: same brand, a dashboard link and sign out.
+// Header for signed-in pages: the same brand, a tab for each area and sign out.
 export function AppHeader({ locale, path, signedIn }: { locale: Locale; path: string; signedIn: boolean }) {
-  const ui = UI[locale];
   const other = LOCALES.find((l) => l !== locale)!;
   const strings =
     locale === "fr"
-      ? { dashboard: "Codes", reviewKits: "Kits avis", menus: "Menus", plan: "Offre", signOut: "Se déconnecter" }
-      : { dashboard: "Codes", reviewKits: "Review kits", menus: "Menus", plan: "Plan", signOut: "Sign out" };
-  const prefix = (l: Locale) => (l === "fr" ? "/fr" : "");
+      ? { dashboard: "Mes codes", reviewKits: "Kits avis", menus: "Menus", plan: "Mon offre", signOut: "Se déconnecter" }
+      : { dashboard: "My codes", reviewKits: "Review kits", menus: "Menus", plan: "My plan", signOut: "Sign out" };
+  const tabs: { href: string; label: string; icon: ReactNode }[] = [
+    { href: "/dashboard", label: strings.dashboard, icon: <GridIcon className="h-5 w-5" /> },
+    { href: "/dashboard/review-kits", label: strings.reviewKits, icon: <StarIcon className="h-5 w-5" /> },
+    { href: "/dashboard/menus", label: strings.menus, icon: <MenuIcon className="h-5 w-5" /> },
+    { href: "/dashboard/billing", label: strings.plan, icon: <WalletIcon className="h-5 w-5" /> },
+  ];
+  // The most specific tab that matches the current path is the active one.
+  const active = tabs
+    .filter((tab) => path === tab.href || path.startsWith(`${tab.href}/`))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href;
   return (
     <header className="border-b border-stone-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href={pathFor(locale, "home")} className="flex shrink-0 items-center gap-2 font-semibold text-stone-900">
-          <Logo />
-          <span className="hidden sm:inline">{ui.siteName}</span>
-        </Link>
-        <nav className="flex flex-wrap items-center justify-end gap-x-4 gap-y-2 text-sm">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+        <Brand locale={locale} compact={signedIn} />
+        <div className="flex items-center gap-2">
+          <LanguageLink href={`${prefix(other)}${path}` || "/"} locale={locale} />
           {signedIn && (
-            <>
-              <Link href={`${prefix(locale)}/dashboard`} className="text-stone-600 hover:text-stone-900">
-                {strings.dashboard}
-              </Link>
-              <Link href={`${prefix(locale)}/dashboard/review-kits`} className="text-stone-600 hover:text-stone-900">
-                {strings.reviewKits}
-              </Link>
-              <Link href={`${prefix(locale)}/dashboard/menus`} className="text-stone-600 hover:text-stone-900">
-                {strings.menus}
-              </Link>
-              <Link href={`${prefix(locale)}/dashboard/billing`} className="text-stone-600 hover:text-stone-900">
-                {strings.plan}
-              </Link>
-              <form action={`/auth/signout?locale=${locale}`} method="post">
-                <button type="submit" className="text-stone-600 hover:text-stone-900">
-                  {strings.signOut}
-                </button>
-              </form>
-            </>
+            <form action={`/auth/signout?locale=${locale}`} method="post">
+              <button type="submit" className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[15px] font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900">
+                <LogoutIcon className="h-4 w-4" />
+                <span className="hidden sm:inline">{strings.signOut}</span>
+                <span className="sr-only sm:hidden">{strings.signOut}</span>
+              </button>
+            </form>
           )}
-          <Link
-            href={`${prefix(other)}${path}` || "/"}
-            hrefLang={other}
-            lang={other}
-            className="rounded-full border border-stone-300 px-3 py-1 text-stone-700 hover:bg-stone-100"
-          >
-            {ui.nav.switchLanguage}
-          </Link>
-        </nav>
+        </div>
       </div>
+      {signedIn && (
+        <nav className="mx-auto max-w-6xl overflow-x-auto px-4 sm:px-6">
+          <ul className="flex gap-1 pb-2">
+            {tabs.map((tab) => (
+              <li key={tab.href} className="shrink-0">
+                <Link
+                  href={`${prefix(locale)}${tab.href}`}
+                  aria-current={tab.href === active ? "page" : undefined}
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-full px-4 text-[15px] font-semibold transition-colors ${
+                    tab.href === active ? "bg-brand-50 text-brand-800" : "text-stone-600 hover:bg-stone-100 hover:text-stone-900"
+                  }`}
+                >
+                  {tab.icon}
+                  {tab.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }

@@ -72,23 +72,23 @@ export default async function CodePage({ params }: PageProps<"/[lang]/dashboard/
   return (
     <>
       <AppHeader locale={lang} path={`/dashboard/codes/${code.id}`} signedIn />
-      <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-8 px-4 py-8">
-        <Link href={`${prefix}/dashboard`} className="text-sm text-brand-700 underline">
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-8 px-4 py-10 sm:px-6">
+        <Link href={`${prefix}/dashboard`} className="btn-link text-[15px]">
           ← {t.code.back}
         </Link>
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-stone-900">{code.name || code.short_slug}</h1>
-          <p className="text-sm text-stone-600">
-            {t.code.shortLink}: <span className="font-mono">{link}</span>
+          <h1 className="page-title">{code.name || code.short_slug}</h1>
+          <p className="text-[15px] text-stone-600">
+            {t.code.shortLink}: <span className="break-all font-mono">{link}</span>
           </p>
         </div>
 
         {!code.is_active && (
-          <p className="rounded-xl bg-amber-50 px-4 py-3 text-sm text-amber-900">{t.code.archivedNote}</p>
+          <p className="notice-warn">{t.code.archivedNote}</p>
         )}
 
         <div className="grid gap-8 lg:grid-cols-[1fr_260px]">
-          <section className="space-y-6 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
+          <section className="space-y-6 card">
             <DestinationForm locale={lang} id={code.id} destination={code.destination_url}
               t={{ destination: t.code.destination, save: t.code.save, saved: t.code.saved }}
               errors={t.errors}
@@ -97,7 +97,7 @@ export default async function CodePage({ params }: PageProps<"/[lang]/dashboard/
               <input type="hidden" name="locale" value={lang} />
               <input type="hidden" name="id" value={code.id} />
               <input type="hidden" name="archived" value={code.is_active ? "true" : "false"} />
-              <button type="submit" className="text-sm text-stone-600 underline">
+              <button type="submit" className="inline-flex min-h-11 items-center text-[15px] text-stone-600 underline underline-offset-4 hover:text-stone-900">
                 {code.is_active ? t.code.archive : t.code.restore}
               </button>
             </form>
@@ -106,12 +106,12 @@ export default async function CodePage({ params }: PageProps<"/[lang]/dashboard/
         </div>
 
         <section className="space-y-4">
-          <h2 className="text-xl font-semibold text-stone-900">{t.code.analytics}</h2>
+          <h2 className="text-2xl font-bold text-stone-900">{t.code.analytics}</h2>
           <div className="grid gap-4 sm:grid-cols-2">
             <Stat label={t.code.total} value={total} />
             <Stat label={t.code.unique} value={unique} />
           </div>
-          <div className="rounded-2xl border border-stone-200 bg-white p-4">
+          <div className="rounded-3xl border border-stone-200 bg-white p-6">
             <div className="flex h-40 items-end gap-1" role="img" aria-label={`${t.code.total}: ${total}`}>
               {days.map((d) => (
                 <div
@@ -127,7 +127,7 @@ export default async function CodePage({ params }: PageProps<"/[lang]/dashboard/
             )}
           </div>
           {total === 0 ? (
-            <p className="text-stone-600">{t.code.noScans}</p>
+            <p className="text-[17px] text-stone-600">{t.code.noScans}</p>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               <Breakdown title={t.code.countries} rows={countries} />
@@ -148,17 +148,17 @@ function topCounts(values: string[], limit = 5): [string, number][] {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4">
-      <p className="text-sm text-stone-600">{label}</p>
-      <p className="text-3xl font-bold text-stone-900">{value}</p>
+    <div className="rounded-3xl border border-stone-200 bg-white p-6">
+      <p className="text-[15px] text-stone-600">{label}</p>
+      <p className="font-display text-4xl font-extrabold text-stone-900">{value}</p>
     </div>
   );
 }
 
 function Breakdown({ title, rows }: { title: string; rows: [string, number][] }) {
   return (
-    <div className="rounded-2xl border border-stone-200 bg-white p-4">
-      <h3 className="mb-2 font-medium text-stone-900">{title}</h3>
+    <div className="rounded-3xl border border-stone-200 bg-white p-6">
+      <h3 className="mb-3 text-lg font-bold text-stone-900">{title}</h3>
       <ul className="space-y-1 text-sm">
         {rows.map(([name, count]) => (
           <li key={name} className="flex justify-between text-stone-700">

@@ -11,10 +11,8 @@ import { buildPrintPack } from "@/lib/review/printPack";
 import { downloadBlob } from "@/lib/qr/render";
 import type { PlaceResult } from "@/lib/review/places";
 
-const inputClass =
-  "mt-1 block w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-stone-900 shadow-sm focus:border-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-600/20";
-const buttonClass =
-  "rounded-lg bg-brand-700 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-800 disabled:cursor-not-allowed disabled:bg-stone-300";
+const inputClass = "field mt-2";
+const buttonClass = "btn btn-primary";
 
 type Errors = DashboardStrings["errors"] & ReviewStrings["errors"];
 type Plain<T> = { [K in keyof T as T[K] extends (...args: never[]) => unknown ? never : K]: T[K] };
@@ -32,7 +30,7 @@ function ErrorText({ state, errors }: { state: KitActionState; errors: Errors })
 function ExtraFields({ t, values }: { t: ReviewClientStrings; values?: ExtraLink[] }) {
   return (
     <fieldset className="space-y-3">
-      <legend className="text-sm font-medium text-stone-700">{t.create.extras}</legend>
+      <legend className="text-[15px] font-semibold text-stone-800">{t.create.extras}</legend>
       <div className="grid gap-3 sm:grid-cols-2">
         {EXTRA_PLATFORMS.map((platform) => (
           <label key={platform} className="block text-sm text-stone-600">
@@ -63,12 +61,12 @@ export function CreateKitForm({ locale, t, errors, disabled }: { locale: Locale;
   }
 
   return (
-    <form action={action} className="space-y-5 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-      <h2 className="font-semibold text-stone-900">{t.create.heading}</h2>
+    <form action={action} className="space-y-5 card">
+      <h2 className="text-xl font-bold text-stone-900">{t.create.heading}</h2>
       <input type="hidden" name="locale" value={locale} />
 
       <div>
-        <label className="block text-sm font-medium text-stone-700" htmlFor="place-search">
+        <label className="block text-[15px] font-semibold text-stone-800" htmlFor="place-search">
           {t.create.search}
         </label>
         <div className="flex gap-2">
@@ -93,16 +91,16 @@ export function CreateKitForm({ locale, t, errors, disabled }: { locale: Locale;
         {results === "error" && <p className="mt-2 text-sm text-red-700">{errors.generic}</p>}
         {Array.isArray(results) && results.length === 0 && <p className="mt-2 text-sm text-stone-600">{t.create.noResults}</p>}
         {Array.isArray(results) && results.length > 0 && (
-          <ul className="mt-2 divide-y divide-stone-200 rounded-lg border border-stone-200">
+          <ul className="mt-3 divide-y divide-stone-200 overflow-hidden rounded-2xl border border-stone-200">
             {results.map((place) => (
               <li key={place.placeId} className="flex items-center justify-between gap-3 p-3">
                 <span className="min-w-0">
-                  <span className="block font-medium text-stone-900">{place.name}</span>
+                  <span className="block text-[17px] font-bold text-stone-900">{place.name}</span>
                   <span className="block truncate text-sm text-stone-500">{place.address}</span>
                 </span>
                 <button
                   type="button"
-                  className="shrink-0 text-sm font-medium text-brand-700 underline"
+                  className="btn-link shrink-0 text-[15px]"
                   onClick={() => {
                     setBusinessName(place.name);
                     setReview(place.placeId);
@@ -118,16 +116,16 @@ export function CreateKitForm({ locale, t, errors, disabled }: { locale: Locale;
       </div>
 
       <div className="grid gap-4 sm:grid-cols-[2fr_1fr]">
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.create.businessName}
           <input name="businessName" required maxLength={80} value={businessName} onChange={(e) => setBusinessName(e.target.value)} className={inputClass} />
         </label>
-        <label className="block text-sm font-medium text-stone-700">
+        <label className="block text-[15px] font-semibold text-stone-800">
           {t.create.color}
-          <input name="color" type="color" defaultValue={DEFAULT_BRAND_COLOR} className="mt-1 h-10 w-16 cursor-pointer rounded border border-stone-300 bg-white p-1" />
+          <input name="color" type="color" defaultValue={DEFAULT_BRAND_COLOR} className="mt-2 block h-12 w-20 cursor-pointer rounded-xl border-[1.5px] border-stone-300 bg-white p-1.5" />
         </label>
       </div>
-      <label className="block text-sm font-medium text-stone-700">
+      <label className="block text-[15px] font-semibold text-stone-800">
         {t.create.reviewLink}
         <input name="review" required value={review} onChange={(e) => setReview(e.target.value)} className={inputClass} />
         <span className="mt-1 block text-xs font-normal text-stone-500">{t.create.reviewLinkHelp}</span>
@@ -136,7 +134,7 @@ export function CreateKitForm({ locale, t, errors, disabled }: { locale: Locale;
         <p className="text-xs text-stone-500">→ {googleReviewUrl(review.trim())}</p>
       )}
       <ExtraFields t={t} />
-      <p className="rounded-lg bg-stone-50 px-3 py-2 text-sm text-stone-600">{t.noGating}</p>
+      <p className="rounded-2xl bg-stone-100 px-5 py-4 text-[15px] leading-relaxed text-stone-700">{t.noGating}</p>
       <ErrorText state={state} errors={errors} />
       <button type="submit" disabled={pending || disabled} className={buttonClass}>
         {t.create.submit}
@@ -165,7 +163,7 @@ export function KitLinksForm({
     <form action={action} className="space-y-4">
       <input type="hidden" name="locale" value={locale} />
       <input type="hidden" name="id" value={id} />
-      <label className="block text-sm font-medium text-stone-700">
+      <label className="block text-[15px] font-semibold text-stone-800">
         {t.create.reviewLink}
         <input name="review" required defaultValue={review} className={inputClass} />
       </label>
@@ -215,22 +213,22 @@ export function PrintPackPanel({
   }
 
   return (
-    <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6" lang={locale}>
-      <h2 className="font-semibold text-stone-900">{t.kit.pack}</h2>
-      <p className="text-sm text-stone-600">{t.kit.packIntro}</p>
+    <section className="space-y-4 card" lang={locale}>
+      <h2 className="text-xl font-bold text-stone-900">{t.kit.pack}</h2>
+      <p className="text-[15px] text-stone-600">{t.kit.packIntro}</p>
       <fieldset>
-        <legend className="mb-2 text-sm font-medium text-stone-700">{t.kit.design}</legend>
+        <legend className="mb-3 text-[15px] font-semibold text-stone-800">{t.kit.design}</legend>
         <div className="flex flex-wrap gap-2">
           {all.map((option) => {
             const locked = !allowed.includes(option);
             return (
               <label
                 key={option}
-                className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm ${
+                className={`flex items-center gap-2 min-h-11 rounded-full border-[1.5px] px-4 py-2 text-[15px] font-medium ${
                   design === option ? "border-brand-700 bg-brand-50 text-brand-800" : "border-stone-300 text-stone-700"
                 } ${locked ? "opacity-50" : "cursor-pointer"}`}
               >
-                <input type="radio" name="design" value={option} checked={design === option} disabled={locked} onChange={() => setDesign(option)} className="accent-brand-700" />
+                <input type="radio" name="design" value={option} checked={design === option} disabled={locked} onChange={() => setDesign(option)} className="h-5 w-5 accent-brand-700" />
                 {t.kit.designs[option]}
                 {locked && <span className="text-xs">({t.kit.lockedDesign})</span>}
               </label>
@@ -238,16 +236,16 @@ export function PrintPackPanel({
           })}
         </div>
       </fieldset>
-      <label className="block text-sm font-medium text-stone-700">
+      <label className="block text-[15px] font-semibold text-stone-800">
         {t.kit.logo}
         <input
           type="file"
           accept="image/png,image/jpeg,image/svg+xml,image/webp"
           onChange={(e) => setLogo(e.target.files?.[0] ?? null)}
-          className="mt-1 block text-sm file:mr-3 file:rounded-full file:border-0 file:bg-stone-100 file:px-4 file:py-2 file:text-sm file:font-medium"
+          className="mt-1 block text-sm file:me-3 file:min-h-11 file:cursor-pointer file:rounded-full file:border-0 file:bg-brand-50 file:px-5 file:py-2 file:text-[15px] file:font-semibold file:text-brand-800"
         />
       </label>
-      <ul className="list-disc pl-5 text-sm text-stone-600">
+      <ul className="list-disc ps-5 text-sm text-stone-600">
         {(["counter-stand", "table-tent", "window-sticker", "receipt-card", "staff-badge"] as const).map((item) => (
           <li key={item}>{t.items[item]}</li>
         ))}

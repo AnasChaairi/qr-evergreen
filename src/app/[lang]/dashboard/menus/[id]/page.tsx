@@ -47,34 +47,34 @@ export default async function MenuPage({ params }: PageProps<"/[lang]/dashboard/
   return (
     <>
       <AppHeader locale={lang} path={`/dashboard/menus/${menu.id}`} signedIn />
-      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-8">
-        <Link href={`${prefix}/dashboard/menus`} className="text-sm text-brand-700 underline">
+      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6">
+        <Link href={`${prefix}/dashboard/menus`} className="btn-link text-[15px]">
           ← {t.edit.back}
         </Link>
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-stone-900">{menu.title}</h1>
-          <p className="text-sm text-stone-600">
-            {t.edit.shortLink}: <span className="font-mono">{link}</span>
+          <h1 className="page-title">{menu.title}</h1>
+          <p className="text-[15px] text-stone-600">
+            {t.edit.shortLink}: <span className="break-all font-mono">{link}</span>
           </p>
-          <p className="text-sm text-stone-600">
+          <p className="text-[15px] text-stone-600">
             {t.edit.publicPage}:{" "}
-            <a href={pageUrl} target="_blank" rel="noopener" className="text-brand-700 underline">
+            <a href={pageUrl} target="_blank" rel="noopener" className="break-all font-semibold text-brand-700 underline underline-offset-4">
               {pageUrl}
             </a>
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-[1fr_auto]">
-          <section className="rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
+          <section className="card">
             <MenuPackPanel title={menu.title} shortUrl={link} color={color} allowed={designsForPlan(account.plan)} t={t} designNames={REVIEW[lang].kit.designs} />
           </section>
-          <section className="rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
+          <section className="card">
             <ShortLinkDownload url={link} slug={slug} label={t.edit.download} />
           </section>
         </div>
 
-        <section className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-          <h2 className="font-semibold text-stone-900">{t.mode.heading}</h2>
+        <section className="space-y-3 card">
+          <h2 className="text-xl font-bold text-stone-900">{t.mode.heading}</h2>
           <div className="grid gap-3 sm:grid-cols-2">
             {(["file", "builder"] as const).map((mode) => {
               const locked = mode === "builder" && !limits.menuBuilder && menu.mode !== "builder";
@@ -88,11 +88,11 @@ export default async function MenuPage({ params }: PageProps<"/[lang]/dashboard/
                     type="submit"
                     disabled={locked || active}
                     aria-pressed={active}
-                    className={`h-full w-full rounded-xl border p-4 text-start ${
-                      active ? "border-brand-700 bg-brand-50" : "border-stone-300 hover:bg-stone-50"
+                    className={`h-full min-h-24 w-full rounded-2xl border-2 p-5 text-start transition ${
+                      active ? "border-brand-700 bg-brand-50" : "border-stone-200 hover:border-brand-600 hover:bg-stone-50"
                     } ${locked ? "cursor-not-allowed opacity-50" : ""}`}
                   >
-                    <span className="block font-medium text-stone-900">
+                    <span className="block text-[17px] font-bold text-stone-900">
                       {t.mode[mode]} {locked && <span className="text-xs font-normal">({t.mode.locked})</span>}
                     </span>
                     <span className="block text-sm text-stone-600">{mode === "file" ? t.mode.fileHelp : t.mode.builderHelp}</span>
@@ -103,10 +103,10 @@ export default async function MenuPage({ params }: PageProps<"/[lang]/dashboard/
           </div>
         </section>
 
-        <section className="rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
+        <section className="card">
           {menu.mode === "builder" ? (
             <>
-              {!limits.menuBuilder && <p className="mb-4 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">{t.edit.builderLocked}</p>}
+              {!limits.menuBuilder && <p className="notice-warn mb-4">{t.edit.builderLocked}</p>}
               <MenuBuilder
                 locale={lang}
                 id={menu.id}
@@ -122,8 +122,8 @@ export default async function MenuPage({ params }: PageProps<"/[lang]/dashboard/
           )}
         </section>
 
-        <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-          <h2 className="font-semibold text-stone-900">{t.edit.settings}</h2>
+        <section className="space-y-4 card">
+          <h2 className="text-xl font-bold text-stone-900">{t.edit.settings}</h2>
           <MenuDetailsForm
             locale={lang}
             id={menu.id}

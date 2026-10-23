@@ -1,12 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
 import Script from "next/script";
 import { notFound } from "next/navigation";
 import { Footer } from "@/components/SiteChrome";
 import { LOCALES, SITE_URL, isLocale } from "@/lib/i18n";
+import { fontVariables } from "../fonts";
 import "../globals.css";
-
-const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 const PLAUSIBLE_DOMAIN = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 const ADSENSE_CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
@@ -17,7 +15,7 @@ export const metadata: Metadata = {
   icons: { icon: "/icon.svg" },
 };
 
-export const viewport: Viewport = { themeColor: "#166534" };
+export const viewport: Viewport = { themeColor: "#0f6b45" };
 
 export const dynamicParams = false;
 
@@ -29,7 +27,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
   const { lang } = await params;
   if (!isLocale(lang)) notFound();
   return (
-    <html lang={lang} className={`${inter.variable} h-full antialiased`}>
+    <html lang={lang} className={`${fontVariables} h-full antialiased`}>
       <body className="flex min-h-full flex-col font-sans">
         {children}
         <Footer locale={lang} />

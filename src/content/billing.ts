@@ -16,6 +16,7 @@ export type BillingStrings = {
     perMonth: string;
     perYear: string;
     yearlySaving: string;
+    popular: string;
     free: string;
     startFree: string;
     choose: string;
@@ -58,6 +59,7 @@ const en: BillingStrings = {
     perMonth: "/month",
     perYear: "/year",
     yearlySaving: "2 months free",
+    popular: "Most popular",
     free: "Free",
     startFree: "Start free",
     choose: "Choose",
@@ -133,6 +135,7 @@ const fr: BillingStrings = {
     perMonth: "/mois",
     perYear: "/an",
     yearlySaving: "2 mois offerts",
+    popular: "Le plus choisi",
     free: "Gratuit",
     startFree: "Commencer gratuitement",
     choose: "Choisir",

@@ -43,19 +43,19 @@ export default async function ReviewKitPage({ params }: PageProps<"/[lang]/dashb
   return (
     <>
       <AppHeader locale={lang} path={`/dashboard/review-kits/${kit.id}`} signedIn />
-      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-8">
-        <Link href={`${prefix}/dashboard/review-kits`} className="text-sm text-brand-700 underline">
+      <main id="main" className="mx-auto w-full max-w-4xl flex-1 space-y-8 px-4 py-10 sm:px-6">
+        <Link href={`${prefix}/dashboard/review-kits`} className="btn-link text-[15px]">
           ← {t.kit.back}
         </Link>
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-stone-900">{kit.business_name}</h1>
-          <p className="text-sm text-stone-600">
-            {t.kit.shortLink}: <span className="font-mono">{link}</span>
+          <h1 className="page-title">{kit.business_name}</h1>
+          <p className="text-[15px] text-stone-600">
+            {t.kit.shortLink}: <span className="break-all font-mono">{link}</span>
           </p>
           {extras.length > 0 && (
-            <p className="text-sm text-stone-600">
+            <p className="text-[15px] text-stone-600">
               {t.kit.publicPage}:{" "}
-              <a href={`${SITE_URL}/r/${slug}`} className="text-brand-700 underline">
+              <a href={`${SITE_URL}/r/${slug}`} className="break-all font-semibold text-brand-700 underline underline-offset-4">
                 {`${SITE_URL}/r/${slug}`}
               </a>
             </p>
@@ -71,8 +71,8 @@ export default async function ReviewKitPage({ params }: PageProps<"/[lang]/dashb
           locale={lang}
         />
 
-        <section className="space-y-3 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
-          <h2 className="font-semibold text-stone-900">{t.kit.scansByItem}</h2>
+        <section className="space-y-3 card">
+          <h2 className="text-xl font-bold text-stone-900">{t.kit.scansByItem}</h2>
           {sources && sources.length > 0 ? (
             <ul className="space-y-1 text-sm">
               {(sources as { source: string; scans: number }[]).map((row) => (
@@ -83,11 +83,11 @@ export default async function ReviewKitPage({ params }: PageProps<"/[lang]/dashb
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-stone-600">{t.kit.noScans}</p>
+            <p className="text-[15px] text-stone-600">{t.kit.noScans}</p>
           )}
         </section>
 
-        <section className="space-y-4 rounded-2xl border border-stone-200 bg-white p-4 sm:p-6">
+        <section className="space-y-4 card">
           <KitLinksForm locale={lang} id={kit.id} review={kit.google_place_id ?? kit.review_url} extras={extras} t={reviewClientStrings(lang)} errors={errors} />
         </section>
       </main>
