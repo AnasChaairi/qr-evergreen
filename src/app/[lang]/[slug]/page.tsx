@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { AdSlot } from "@/components/AdSlot";
 import { FaqList, Sections, ToolCard } from "@/components/Content";
 import { Generator } from "@/components/Generator";
+import { PricingPromise, PricingTable } from "@/components/Pricing";
 import { Header } from "@/components/SiteChrome";
+import { BILLING } from "@/content/billing";
 import { HOME, INFO_PAGES } from "@/content/pages";
 import { TOOLS } from "@/content/tools";
 import { UI } from "@/content/ui";
@@ -32,7 +34,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/[slug]">):
   const resolved = await resolve(params);
   if (!resolved) return {};
   const { lang, page } = resolved;
-  const content = isCodeType(page) ? TOOLS[lang][page] : INFO_PAGES[lang][page];
+  const content = isCodeType(page) ? TOOLS[lang][page] : page === "pricing" ? BILLING[lang].pricing : INFO_PAGES[lang][page];
   return {
     title: content.metaTitle,
     description: content.metaDescription,
@@ -52,7 +54,8 @@ export default async function SlugPage({ params }: PageProps<"/[lang]/[slug]">) 
   const resolved = await resolve(params);
   if (!resolved) notFound();
   const { lang, page } = resolved;
-  return isCodeType(page) ? <ToolPage lang={lang} type={page} /> : <InfoPage lang={lang} page={page} />;
+  if (isCodeType(page)) return <ToolPage lang={lang} type={page} />;
+  return page === "pricing" ? <PricingPage lang={lang} /> : <InfoPage lang={lang} page={page} />;
 }
 
 // Related tools: every other MVP type, in a stable order.
@@ -100,6 +103,26 @@ function ToolPage({ lang, type }: { lang: Locale; type: CodeType }) {
             </div>
             <AdSlot placement="sidebar" className="hidden lg:block" />
           </aside>
+        </div>
+      </main>
+    </>
+  );
+}
+
+function PricingPage({ lang }: { lang: Locale }) {
+  const t = BILLING[lang].pricing;
+  return (
+    <>
+      <Header locale={lang} page="pricing" />
+      <main id="main" className="mx-auto w-full max-w-6xl flex-1 space-y-10 px-4 py-8 sm:py-12">
+        <div className="max-w-3xl space-y-3">
+          <h1 className="text-3xl font-bold tracking-tight text-stone-900 sm:text-4xl">{t.h1}</h1>
+          <p className="text-lg leading-relaxed text-stone-600">{t.intro}</p>
+        </div>
+        <PricingPromise locale={lang} />
+        <PricingTable locale={lang} />
+        <div className="max-w-3xl">
+          <FaqList heading={t.faqHeading} items={t.faq} />
         </div>
       </main>
     </>

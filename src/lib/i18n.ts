@@ -19,7 +19,8 @@ export type PageId =
   | "privacy"
   | "terms"
   | "about"
-  | "contact";
+  | "contact"
+  | "pricing";
 
 export const SLUGS: Record<Exclude<PageId, "home">, Record<Locale, string>> = {
   wifi: { en: "wifi-qr-code", fr: "qr-code-wifi" },
@@ -31,6 +32,7 @@ export const SLUGS: Record<Exclude<PageId, "home">, Record<Locale, string>> = {
   terms: { en: "terms", fr: "conditions" },
   about: { en: "about", fr: "a-propos" },
   contact: { en: "contact", fr: "contact" },
+  pricing: { en: "pricing", fr: "tarifs" },
 };
 
 export function pageIdFromSlug(locale: Locale, slug: string): Exclude<PageId, "home"> | null {

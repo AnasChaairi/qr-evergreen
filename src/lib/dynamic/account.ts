@@ -1,5 +1,6 @@
 import "server-only";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import type { Locale } from "@/lib/i18n";
@@ -13,7 +14,8 @@ export type Account = {
 };
 
 // The signed-in user's profile and workspace, or a redirect to the login page.
-export async function requireAccount(locale: Locale): Promise<Account> {
+// Cached per request, since the dashboard layout and page both ask.
+export const requireAccount = cache(async (locale: Locale): Promise<Account> => {
   const loginPath = locale === "fr" ? "/fr/login" : "/login";
   if (!isSupabaseConfigured()) redirect(loginPath);
   const supabase = await createClient();
@@ -38,4 +40,4 @@ export async function requireAccount(locale: Locale): Promise<Account> {
       profile.current_period_end ? new Date(profile.current_period_end) : null,
     ),
   };
-}
+});

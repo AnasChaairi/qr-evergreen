@@ -108,6 +108,11 @@ begin
     raise exception 'plan update should be denied';
   exception when insufficient_privilege then null;
   end;
+  begin
+    update public.profiles set subscription_id = 'sub_x', billing_synced_at = now();
+    raise exception 'billing update should be denied';
+  exception when insufficient_privilege then null;
+  end;
 end $$;
 
 reset role;
